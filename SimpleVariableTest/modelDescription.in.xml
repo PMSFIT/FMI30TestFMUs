@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  fmiVersion="@FMU_FMI_VERSION@"
+  modelName="@FMU_MODEL_NAME@"
+  instantiationToken="@FMU_TOKEN@"
+  description="Simple Test FMU for Scalar Variable Types"
+  author="@FMU_AUTHOR@"
+  version="@FMU_VERSION@"
+  generationTool="PMSF Manual FMU Framework"
+  generationDateAndTime="@FMU_TIMESTAMP@"
+  variableNamingConvention="structured">
+  <BasicCoSimulation
+    modelIdentifier="@FMU_BCS_MODEL_IDENTIFIER@"
+    canHandleVariableCommunicationStepSize="true"
+    canNotUseMemoryManagementFunctions="true">
+  </BasicCoSimulation>
+  <BuildConfiguration modelIdentifier="@FMU_BCS_MODEL_IDENTIFIER@">
+    <SourceFileSet language="C99">
+      <SourceFile name="SimpleVariableTest.c"/>
+      <PreprocessorDefinition name="FMU_MODEL_IDENTIFIER" value="@FMU_BCS_MODEL_IDENTIFIER@"/>
+    </SourceFileSet>
+  </BuildConfiguration>
+  <LogCategories>
+    <Category name="FMI" description="Enable logging of all FMI calls"/>
+    <Category name="BINARY" description="Enable Binary-related logging"/>
+  </LogCategories>
+  <DefaultExperiment startTime="0.0" stepSize="0.020"/>
+  <ModelVariables>
+    <Variable name="BinaryInput" valueReference="0" causality="input" variability="discrete">
+      <Binary start=""/>
+    </Variable>
+    <Variable name="BinaryOutput" valueReference="1" causality="output" variability="discrete" initial="exact">
+      <Binary start=""/>
+    </Variable>
+    <Variable name="XOROutput" valueReference="2" causality="output" variability="discrete" initial="exact">
+      <Binary start=""/>
+    </Variable>
+    <Variable name="BinaryConstant" valueReference="3" causality="output" variability="constant" initial="exact">
+      <Binary start="BEEF"/>
+    </Variable>
+    <Variable name="BinaryParameter" valueReference="4" causality="parameter" variability="tunable">
+      <Binary start="1DE4"/>
+    </Variable>
+    <Variable name="BinaryCalculatedParameter" valueReference="5" causality="calculatedParameter" variability="tunable">
+      <Binary start="A30B"/>
+    </Variable>
+  </ModelVariables>
+  <ModelStructure>
+    <Outputs>
+      <Unknown valueReference="1"/>
+      <Unknown valueReference="2"/>
+      <Unknown valueReference="3"/>
+    </Outputs>
+    <InitialUnknowns>
+      <Unknown valueReference="5" dependencies="3 4"/>
+    </InitialUnknowns>
+  </ModelStructure>
+</fmiModelDescription>
