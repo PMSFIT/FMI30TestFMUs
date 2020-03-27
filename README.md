@@ -16,3 +16,16 @@ sort of validation suite.
 
 The FMUs are made available under the MPL 2.0, see LICENSE.txt. Any
 feedback or contributions under this license is highly welcome.
+
+Build Instructions
+------------------
+
+```bash
+$ git clone https://github.com/PMSFIT/FMI30TestFMUs.git
+$ cd FMI30TestFMUs
+$ git submodule update --init
+$ mkdir -p build
+$ cd build
+$ cmake ..
+$ make
+```
