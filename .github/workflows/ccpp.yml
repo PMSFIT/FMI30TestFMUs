@@ -7,12 +7,15 @@ on:
     branches: [ master ]
 
 jobs:
-  buildlx64:
+  build-linux64:
+    name: Build Linux 64
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: prepare
       run: mkdir build
     - name: configure
@@ -22,12 +25,15 @@ jobs:
       working-directory: build
       run: cmake --build . --config Release -j 4
 
-  buildwin64:
+  build-win64:
+    name: Build Windows 64
 
     runs-on: windows-2019
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: prepare
       run: mkdir build
     - name: configure
