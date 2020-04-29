@@ -883,9 +883,9 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
  * Unsupported Features (FMUState, Derivatives, Status Enquiries)
  */
 
-FMI3_Export fmi3GetDoStepDiscardedStatus(fmi3Instance instance,
-                                         fmi3Boolean* terminate,
-                                         fmi3Float64* lastSuccessfulTime)
+FMI3_Export fmi3Status fmi3GetDoStepDiscardedStatus(fmi3Instance instance,
+                                                    fmi3Boolean* terminate,
+                                                    fmi3Float64* lastSuccessfulTime)
 {
     return fmi3Error;
 }
