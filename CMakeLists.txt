@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
+project(FMI30TestFMUs)
 
 # Set a default build type if none was specified
 set(default_build_type "Release")
