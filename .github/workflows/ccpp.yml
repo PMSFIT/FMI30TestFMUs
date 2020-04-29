@@ -1,0 +1,32 @@
+name: C/C++ CMake CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  buildlx64:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      working-directory: build
+      run: cmake ..
+    - name: make
+      run: cmake --build . --config Release -j 4
+
+  buildwin64:
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      working-directory: build
+      run: cmake -G "Visual Studio 16 2019 Win64" ..
+    - name: make
+      run: cmake --build . --config Release -j 4
