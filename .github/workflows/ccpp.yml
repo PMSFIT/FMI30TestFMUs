@@ -19,6 +19,7 @@ jobs:
       working-directory: build
       run: cmake ..
     - name: make
+      working-directory: build
       run: cmake --build . --config Release -j 4
 
   buildwin64:
@@ -31,6 +32,7 @@ jobs:
       run: mkdir build
     - name: configure
       working-directory: build
-      run: cmake -G "Visual Studio 16 2019" -A "Win64" ..
+      run: cmake -G "Visual Studio 16 2019" -A "x64" ..
     - name: make
+      working-directory: build
       run: cmake --build . --config Release -j 4
