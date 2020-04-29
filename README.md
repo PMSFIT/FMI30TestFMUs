@@ -1,7 +1,7 @@
 Non-normative Test FMUs for FMI 3.0
 ===================================
 
-![](https://github.com/PMSFIT/FMI30TestFMUs/workflows/C/C++%20CMake%20CI/badge.svg)
+[![C/C++ CMake CI](https://github.com/PMSFIT/FMI30TestFMUs/workflows/C/C++%20CMake%20CI/badge.svg)](https://github.com/PMSFIT/FMI30TestFMUs/actions?query=workflow%3A%22C%2FC%2B%2B+CMake+CI%22)
 
 This repository contains non-normative Test FMUs implementing draft
 versions of the upcoming FMI 3.0 standard. The FMUs are manually
