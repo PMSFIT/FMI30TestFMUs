@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: prepare
+      run: mkdir build
     - name: configure
       working-directory: build
       run: cmake ..
@@ -25,6 +27,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: prepare
+      run: mkdir build
     - name: configure
       working-directory: build
       run: cmake -G "Visual Studio 16 2019 Win64" ..
