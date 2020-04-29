@@ -128,8 +128,6 @@ typedef fmi3Char* my3String;
 typedef struct {
     fmi3InstanceEnvironment        instanceEnvironment;
     fmi3CallbackLogMessage         logMessage;
-    fmi3CallbackAllocateMemory     allocateMemory;
-    fmi3CallbackFreeMemory         freeMemory;
     fmi3CallbackIntermediateUpdate intermediateUpdate;
 } fmi3CallbackFunctionsVar;
 

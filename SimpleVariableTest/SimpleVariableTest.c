@@ -118,13 +118,6 @@ fmi3Status doInit(SimpleVariableTest component)
     return fmi3OK;
 }
 
-fmi3Status doStart(SimpleVariableTest component, fmi3Boolean toleranceDefined, fmi3Float64 tolerance, fmi3Float64 startTime, fmi3Boolean stopTimeDefined, fmi3Float64 stopTime)
-{
-    DEBUGBREAK();
-    component->last_time = startTime;
-    return fmi3OK;
-}
-
 fmi3Status doInitCalc(SimpleVariableTest component)
 {
     DEBUGBREAK();
@@ -150,8 +143,9 @@ fmi3Status doInitCalc(SimpleVariableTest component)
     return fmi3OK;
 }
 
-fmi3Status doEnterInitializationMode(SimpleVariableTest component)
+fmi3Status doEnterInitializationMode(SimpleVariableTest component, fmi3Boolean toleranceDefined, fmi3Float64 tolerance, fmi3Float64 startTime, fmi3Boolean stopTimeDefined, fmi3Float64 stopTime)
 {
+    component->last_time = startTime;
     component->init_mode = fmi3True;
     doInitCalc(component);
     return fmi3OK;
@@ -274,8 +268,6 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     fmi3Boolean                    intermediateVariableSetRequired,
     fmi3InstanceEnvironment        instanceEnvironment,
     fmi3CallbackLogMessage         logMessage,
-    fmi3CallbackAllocateMemory     allocateMemory,
-    fmi3CallbackFreeMemory         freeMemory,
     fmi3CallbackIntermediateUpdate intermediateUpdate)
 {
     SimpleVariableTest myc = NULL;
@@ -312,8 +304,6 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     myc->intermediateInternalVariableGetRequired=intermediateInternalVariableGetRequired;
     myc->intermediateVariableSetRequired=intermediateVariableSetRequired;
     myc->functions.logMessage=logMessage;
-    myc->functions.allocateMemory=allocateMemory;
-    myc->functions.freeMemory=freeMemory;
     myc->functions.intermediateUpdate=intermediateUpdate;
     myc->functions.instanceEnvironment=instanceEnvironment;
 
@@ -350,7 +340,7 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     return (fmi3Instance)myc;
 }
 
-FMI3_Export fmi3Status fmi3SetupExperiment(fmi3Instance instance,
+FMI3_Export fmi3Status fmi3EnterInitializationMode(fmi3Instance instance,
     fmi3Boolean toleranceDefined,
     fmi3Float64 tolerance,
     fmi3Float64 startTime,
@@ -358,15 +348,8 @@ FMI3_Export fmi3Status fmi3SetupExperiment(fmi3Instance instance,
     fmi3Float64 stopTime)
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
-    fmi_verbose_log(myc,"fmi3SetupExperiment(%d,%g,%g,%d,%g)", toleranceDefined, tolerance, startTime, stopTimeDefined, stopTime);
-    return doStart(myc,toleranceDefined, tolerance, startTime, stopTimeDefined, stopTime);
-}
-
-FMI3_Export fmi3Status fmi3EnterInitializationMode(fmi3Instance instance)
-{
-    SimpleVariableTest myc = (SimpleVariableTest)instance;
-    fmi_verbose_log(myc,"fmi3EnterInitializationMode()");
-    return doEnterInitializationMode(myc);
+    fmi_verbose_log(myc,"fmi3EnterInitializationMode(%d,%g,%g,%d,%g)", toleranceDefined, tolerance, startTime, stopTimeDefined, stopTime);
+    return doEnterInitializationMode(myc,toleranceDefined, tolerance, startTime, stopTimeDefined, stopTime);
 }
 
 FMI3_Export fmi3Status fmi3ExitInitializationMode(fmi3Instance instance)
