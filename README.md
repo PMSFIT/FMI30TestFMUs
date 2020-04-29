@@ -26,8 +26,8 @@ Build Instructions
 $ git clone https://github.com/PMSFIT/FMI30TestFMUs.git
 $ cd FMI30TestFMUs
 $ git submodule update --init
-$ mkdir -p build
+$ mkdir build
 $ cd build
 $ cmake ..
-$ make
+$ cmake --build .
 ```
