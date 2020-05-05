@@ -7,6 +7,7 @@ string(TIMESTAMP FMU_TIMESTAMP UTC)
 string(MD5 FMU_TOKEN modelDescription.in.xml)
 
 configure_file(modelDescription.in.xml modelDescription.xml @ONLY)
+configure_file(buildDescription.in.xml buildDescription.xml @ONLY)
 
 add_library(${FMU_BCS_MODEL_IDENTIFIER} SHARED SimpleVariableTest.c)
 set_target_properties(${FMU_BCS_MODEL_IDENTIFIER} PROPERTIES PREFIX "")
@@ -47,6 +48,7 @@ add_custom_command(TARGET ${FMU_BCS_MODEL_IDENTIFIER}
 	COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/buildfmu"
 	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/sources"
 	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/binaries/${FMI_BINARIES_PLATFORM}"
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/buildDescription.xml" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources/buildDescription.xml"
 	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/modelDescription.xml" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/modelDescription.xml"
 	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/SimpleVariableTest.c" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources/SimpleVariableTest.c"
 	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/SimpleVariableTest.h" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources/SimpleVariableTest.h"

@@ -14,12 +14,6 @@
     canHandleVariableCommunicationStepSize="true"
     canNotUseMemoryManagementFunctions="true">
   </BasicCoSimulation>
-  <BuildConfiguration modelIdentifier="@FMU_BCS_MODEL_IDENTIFIER@">
-    <SourceFileSet language="C99">
-      <SourceFile name="SimpleVariableTest.c"/>
-      <PreprocessorDefinition name="FMU_MODEL_IDENTIFIER" value="@FMU_BCS_MODEL_IDENTIFIER@"/>
-    </SourceFileSet>
-  </BuildConfiguration>
   <LogCategories>
     <Category name="FMI" description="Enable logging of all FMI calls"/>
     <Category name="BINARY" description="Enable Binary-related logging"/>
