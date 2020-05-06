@@ -14,13 +14,29 @@ file without interaction with the host implementation).  If very
 fine-grained logging of actual FMI API calls is wanted, the flag
 `VERBOSE_FMI_LOGGING` can be switched on.
 
-The FMU provides a binary output constant, a binary tunable
-parameter, a binary tunable calculatedParameter, a binary input
-and two binary outputs. The calculatedParameter is derived from
-the tunable parameter by XORing each byte with a corresponding
-byte from the binary constant (rotating over those bytes if more
-bytes are needed). Similarly the second binary output will be
-calculated by XORing each byte of the binary input with the
-corresponding byte of the tunable parameter (again wrapping
-around if necessary), whereas the first output will always be
+The FMU provides tunable parameter, input, output constant, tunable
+calculated parameter, and output variables for all basic data types
+of FMI 3.0 (i.e. boolean, integer, floating-point, string and binary
+data types). Enumerations are currently not being provided.
+
+For the boolean type, the calculated parameter is calculated as the
+XOR of the tunable parameter and the constant, and the output is
+calculated as the XOR of the input and the tunable parameter.
+
+For the numeric types, the calculated parameter is calculated as the
+product of the tunable parameter and the constant, and the output is
+calculated as the product of the input and the tunable parameter.
+
+For the string type, the calculated parameter is calculated as the
+concatenation of the tunable parameter and the constant, and the
+output is calculated as the concatenation of the input and the
+tunable parameter.
+
+For the binary type, the FMU provides an additional output. The
+calculatedParameter is derived from the tunable parameter by XORing
+each byte with a corresponding byte from the binary constant (rotating
+over those bytes if more bytes are needed). Similarly the second
+binary output will be calculated by XORing each byte of the binary
+input with the corresponding byte of the tunable parameter (again
+wrapping around if necessary), whereas the first output will always be
 a copy of the binary input.

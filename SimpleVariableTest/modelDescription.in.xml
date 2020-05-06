@@ -20,22 +20,202 @@
   </LogCategories>
   <DefaultExperiment startTime="0.0" stepSize="0.020"/>
   <ModelVariables>
-    <Variable name="BinaryInput" valueReference="0" causality="input" variability="discrete">
+    <Variable name="BooleanInput" valueReference="0" causality="input" variability="discrete">
+      <Boolean start="true"/>
+    </Variable>
+    <Variable name="BooleanOutput" valueReference="1" causality="output" variability="discrete" initial="exact">
+      <Boolean start="false"/>
+    </Variable>
+    <Variable name="BooleanConstant" valueReference="2" causality="output" variability="constant" initial="exact">
+      <Boolean start="true"/>
+    </Variable>
+    <Variable name="BooleanParameter" valueReference="3" causality="parameter" variability="tunable">
+      <Boolean start="true"/>
+    </Variable>
+    <Variable name="BooleanCalculatedParameter" valueReference="4" causality="calculatedParameter" variability="tunable">
+      <Boolean start="false"/>
+    </Variable>
+    <Variable name="UInt64Input" valueReference="5" causality="input" variability="discrete">
+      <UInt64 start="1"/>
+    </Variable>
+    <Variable name="UInt64Output" valueReference="6" causality="output" variability="discrete" initial="exact">
+      <UInt64 start="4"/>
+    </Variable>
+    <Variable name="UInt64Constant" valueReference="7" causality="output" variability="constant" initial="exact">
+      <UInt64 start="5"/>
+    </Variable>
+    <Variable name="UInt64Parameter" valueReference="8" causality="parameter" variability="tunable">
+      <UInt64 start="4"/>
+    </Variable>
+    <Variable name="UInt64CalculatedParameter" valueReference="9" causality="calculatedParameter" variability="tunable">
+      <UInt64 start="20"/>
+    </Variable>
+    <Variable name="Int64Input" valueReference="10" causality="input" variability="discrete">
+      <Int64 start="1"/>
+    </Variable>
+    <Variable name="Int64Output" valueReference="11" causality="output" variability="discrete" initial="exact">
+      <Int64 start="4"/>
+    </Variable>
+    <Variable name="Int64Constant" valueReference="12" causality="output" variability="constant" initial="exact">
+      <Int64 start="5"/>
+    </Variable>
+    <Variable name="Int64Parameter" valueReference="13" causality="parameter" variability="tunable">
+      <Int64 start="4"/>
+    </Variable>
+    <Variable name="Int64CalculatedParameter" valueReference="14" causality="calculatedParameter" variability="tunable">
+      <Int64 start="20"/>
+    </Variable>
+    <Variable name="UInt32Input" valueReference="15" causality="input" variability="discrete">
+      <UInt32 start="1"/>
+    </Variable>
+    <Variable name="UInt32Output" valueReference="16" causality="output" variability="discrete" initial="exact">
+      <UInt32 start="4"/>
+    </Variable>
+    <Variable name="UInt32Constant" valueReference="17" causality="output" variability="constant" initial="exact">
+      <UInt32 start="5"/>
+    </Variable>
+    <Variable name="UInt32Parameter" valueReference="18" causality="parameter" variability="tunable">
+      <UInt32 start="4"/>
+    </Variable>
+    <Variable name="UInt32CalculatedParameter" valueReference="19" causality="calculatedParameter" variability="tunable">
+      <UInt32 start="20"/>
+    </Variable>
+    <Variable name="Int32Input" valueReference="20" causality="input" variability="discrete">
+      <Int32 start="1"/>
+    </Variable>
+    <Variable name="Int32Output" valueReference="21" causality="output" variability="discrete" initial="exact">
+      <Int32 start="4"/>
+    </Variable>
+    <Variable name="Int32Constant" valueReference="22" causality="output" variability="constant" initial="exact">
+      <Int32 start="5"/>
+    </Variable>
+    <Variable name="Int32Parameter" valueReference="23" causality="parameter" variability="tunable">
+      <Int32 start="4"/>
+    </Variable>
+    <Variable name="Int32CalculatedParameter" valueReference="24" causality="calculatedParameter" variability="tunable">
+      <Int32 start="20"/>
+    </Variable>
+    <Variable name="UInt16Input" valueReference="25" causality="input" variability="discrete">
+      <UInt16 start="1"/>
+    </Variable>
+    <Variable name="UInt16Output" valueReference="26" causality="output" variability="discrete" initial="exact">
+      <UInt16 start="4"/>
+    </Variable>
+    <Variable name="UInt16Constant" valueReference="27" causality="output" variability="constant" initial="exact">
+      <UInt16 start="5"/>
+    </Variable>
+    <Variable name="UInt16Parameter" valueReference="28" causality="parameter" variability="tunable">
+      <UInt16 start="4"/>
+    </Variable>
+    <Variable name="UInt16CalculatedParameter" valueReference="29" causality="calculatedParameter" variability="tunable">
+      <UInt16 start="20"/>
+    </Variable>
+    <Variable name="Int16Input" valueReference="30" causality="input" variability="discrete">
+      <Int16 start="1"/>
+    </Variable>
+    <Variable name="Int16Output" valueReference="31" causality="output" variability="discrete" initial="exact">
+      <Int16 start="4"/>
+    </Variable>
+    <Variable name="Int16Constant" valueReference="32" causality="output" variability="constant" initial="exact">
+      <Int16 start="5"/>
+    </Variable>
+    <Variable name="Int16Parameter" valueReference="33" causality="parameter" variability="tunable">
+      <Int16 start="4"/>
+    </Variable>
+    <Variable name="Int16CalculatedParameter" valueReference="34" causality="calculatedParameter" variability="tunable">
+      <Int16 start="20"/>
+    </Variable>
+    <Variable name="UInt8Input" valueReference="35" causality="input" variability="discrete">
+      <UInt8 start="1"/>
+    </Variable>
+    <Variable name="UInt8Output" valueReference="36" causality="output" variability="discrete" initial="exact">
+      <UInt8 start="4"/>
+    </Variable>
+    <Variable name="UInt8Constant" valueReference="37" causality="output" variability="constant" initial="exact">
+      <UInt8 start="5"/>
+    </Variable>
+    <Variable name="UInt8Parameter" valueReference="38" causality="parameter" variability="tunable">
+      <UInt8 start="4"/>
+    </Variable>
+    <Variable name="UInt8CalculatedParameter" valueReference="39" causality="calculatedParameter" variability="tunable">
+      <UInt8 start="20"/>
+    </Variable>
+    <Variable name="Int8Input" valueReference="40" causality="input" variability="discrete">
+      <Int8 start="1"/>
+    </Variable>
+    <Variable name="Int8Output" valueReference="41" causality="output" variability="discrete" initial="exact">
+      <Int8 start="4"/>
+    </Variable>
+    <Variable name="Int8Constant" valueReference="42" causality="output" variability="constant" initial="exact">
+      <Int8 start="5"/>
+    </Variable>
+    <Variable name="Int8Parameter" valueReference="43" causality="parameter" variability="tunable">
+      <Int8 start="4"/>
+    </Variable>
+    <Variable name="Int8CalculatedParameter" valueReference="44" causality="calculatedParameter" variability="tunable">
+      <Int8 start="20"/>
+    </Variable>
+    <Variable name="Float64Input" valueReference="45" causality="input" variability="discrete">
+      <Float64 start="1"/>
+    </Variable>
+    <Variable name="Float64Output" valueReference="46" causality="output" variability="discrete" initial="exact">
+      <Float64 start="4"/>
+    </Variable>
+    <Variable name="Float64Constant" valueReference="47" causality="output" variability="constant" initial="exact">
+      <Float64 start="5"/>
+    </Variable>
+    <Variable name="Float64Parameter" valueReference="48" causality="parameter" variability="tunable">
+      <Float64 start="4"/>
+    </Variable>
+    <Variable name="Float64CalculatedParameter" valueReference="49" causality="calculatedParameter" variability="tunable">
+      <Float64 start="20"/>
+    </Variable>
+    <Variable name="Float32Input" valueReference="50" causality="input" variability="discrete">
+      <Float32 start="1"/>
+    </Variable>
+    <Variable name="Float32Output" valueReference="51" causality="output" variability="discrete" initial="exact">
+      <Float32 start="4"/>
+    </Variable>
+    <Variable name="Float32Constant" valueReference="52" causality="output" variability="constant" initial="exact">
+      <Float32 start="5"/>
+    </Variable>
+    <Variable name="Float32Parameter" valueReference="53" causality="parameter" variability="tunable">
+      <Float32 start="4"/>
+    </Variable>
+    <Variable name="Float32CalculatedParameter" valueReference="54" causality="calculatedParameter" variability="tunable">
+      <Float32 start="20"/>
+    </Variable>
+    <Variable name="StringInput" valueReference="55" causality="input" variability="discrete">
+      <String start="abcd"/>
+    </Variable>
+    <Variable name="StringOutput" valueReference="56" causality="output" variability="discrete" initial="exact">
+      <String start="abcdefgh"/>
+    </Variable>
+    <Variable name="StringConstant" valueReference="57" causality="output" variability="constant" initial="exact">
+      <String start="ijkl"/>
+    </Variable>
+    <Variable name="StringParameter" valueReference="58" causality="parameter" variability="tunable">
+      <String start="efgh"/>
+    </Variable>
+    <Variable name="StringCalculatedParameter" valueReference="59" causality="calculatedParameter" variability="tunable">
+      <String start="efghijkl"/>
+    </Variable>
+    <Variable name="BinaryInput" valueReference="60" causality="input" variability="discrete">
       <Binary start=""/>
     </Variable>
-    <Variable name="BinaryOutput" valueReference="1" causality="output" variability="discrete" initial="exact">
+    <Variable name="BinaryOutput" valueReference="61" causality="output" variability="discrete" initial="exact">
       <Binary start=""/>
     </Variable>
-    <Variable name="XOROutput" valueReference="2" causality="output" variability="discrete" initial="exact">
+    <Variable name="XOROutput" valueReference="62" causality="output" variability="discrete" initial="exact">
       <Binary start=""/>
     </Variable>
-    <Variable name="BinaryConstant" valueReference="3" causality="output" variability="constant" initial="exact">
+    <Variable name="BinaryConstant" valueReference="63" causality="output" variability="constant" initial="exact">
       <Binary start="BEEF"/>
     </Variable>
-    <Variable name="BinaryParameter" valueReference="4" causality="parameter" variability="tunable">
+    <Variable name="BinaryParameter" valueReference="64" causality="parameter" variability="tunable">
       <Binary start="1DE4"/>
     </Variable>
-    <Variable name="BinaryCalculatedParameter" valueReference="5" causality="calculatedParameter" variability="tunable">
+    <Variable name="BinaryCalculatedParameter" valueReference="65" causality="calculatedParameter" variability="tunable">
       <Binary start="A30B"/>
     </Variable>
   </ModelVariables>
@@ -43,10 +223,46 @@
     <Outputs>
       <Unknown valueReference="1"/>
       <Unknown valueReference="2"/>
-      <Unknown valueReference="3"/>
+      <Unknown valueReference="6"/>
+      <Unknown valueReference="7"/>
+      <Unknown valueReference="11"/>
+      <Unknown valueReference="12"/>
+      <Unknown valueReference="16"/>
+      <Unknown valueReference="17"/>
+      <Unknown valueReference="21"/>
+      <Unknown valueReference="22"/>
+      <Unknown valueReference="26"/>
+      <Unknown valueReference="27"/>
+      <Unknown valueReference="31"/>
+      <Unknown valueReference="32"/>
+      <Unknown valueReference="36"/>
+      <Unknown valueReference="37"/>
+      <Unknown valueReference="41"/>
+      <Unknown valueReference="42"/>
+      <Unknown valueReference="46"/>
+      <Unknown valueReference="47"/>
+      <Unknown valueReference="51"/>
+      <Unknown valueReference="52"/>
+      <Unknown valueReference="56"/>
+      <Unknown valueReference="57"/>
+      <Unknown valueReference="61"/>
+      <Unknown valueReference="62"/>
+      <Unknown valueReference="63"/>
     </Outputs>
     <InitialUnknowns>
-      <Unknown valueReference="5" dependencies="3 4"/>
+      <Unknown valueReference="4" dependencies="2 3"/>
+      <Unknown valueReference="9" dependencies="7 8"/>
+      <Unknown valueReference="14" dependencies="12 13"/>
+      <Unknown valueReference="19" dependencies="17 18"/>
+      <Unknown valueReference="24" dependencies="22 23"/>
+      <Unknown valueReference="29" dependencies="27 28"/>
+      <Unknown valueReference="34" dependencies="32 33"/>
+      <Unknown valueReference="39" dependencies="37 38"/>
+      <Unknown valueReference="44" dependencies="42 43"/>
+      <Unknown valueReference="49" dependencies="47 48"/>
+      <Unknown valueReference="54" dependencies="52 53"/>
+      <Unknown valueReference="59" dependencies="57 58"/>
+      <Unknown valueReference="65" dependencies="63 64"/>
     </InitialUnknowns>
   </ModelStructure>
 </fmiModelDescription>

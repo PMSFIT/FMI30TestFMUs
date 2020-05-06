@@ -50,6 +50,7 @@
 FILE* SimpleVariableTest_private_log_file;
 #endif
 
+#define FMI_BOOLEAN_XOR(a,b) ((a) ? (!(b)) : (b))
 
 /*
  * Actual Core Content
@@ -62,36 +63,234 @@ fmi3Status doInit(SimpleVariableTest component)
     DEBUGBREAK();
 
     /* Booleans */
-    for (i = 0; i<FMI_BOOLEAN_VARS; i++)
-        component->boolean_vars[i] = fmi3False;
+    for (i = 0; i<FMI_BOOLEAN_VARS; i++) {
+        switch (i) {
+            case FMI_BOOLEAN_BOOLEANINPUT_IDX:
+            case FMI_BOOLEAN_BOOLEANCONSTANT_IDX:
+            case FMI_BOOLEAN_BOOLEANPARAMETER_IDX:
+                component->boolean_vars[i] = fmi3True;
+                break;
+            case FMI_BOOLEAN_BOOLEANOUTPUT_IDX:
+            case FMI_BOOLEAN_BOOLEANCALCULATEDPARAMETER_IDX:
+                component->boolean_vars[i] = fmi3False;
+                break;
+        }
+    }
 
     /* Integers */
-    for (i = 0; i<FMI_UINT64_VARS; i++)
-        component->uint64_vars[i] = 0;
-    for (i = 0; i<FMI_INT64_VARS; i++)
-        component->int64_vars[i] = 0;
-    for (i = 0; i<FMI_UINT32_VARS; i++)
-        component->uint32_vars[i] = 0;
-    for (i = 0; i<FMI_INT32_VARS; i++)
-        component->int32_vars[i] = 0;
-    for (i = 0; i<FMI_UINT16_VARS; i++)
-        component->uint16_vars[i] = 0;
-    for (i = 0; i<FMI_INT16_VARS; i++)
-        component->int16_vars[i] = 0;
-    for (i = 0; i<FMI_UINT8_VARS; i++)
-        component->uint8_vars[i] = 0;
-    for (i = 0; i<FMI_INT8_VARS; i++)
-        component->int8_vars[i] = 0;
+    for (i = 0; i<FMI_UINT64_VARS; i++) {
+        switch (i) {
+            case FMI_UINT64_UINT64INPUT_IDX:
+                component->uint64_vars[i] = 1;
+                break;
+            case FMI_UINT64_UINT64OUTPUT_IDX:
+                component->uint64_vars[i] = 4;
+                break;
+            case FMI_UINT64_UINT64CONSTANT_IDX:
+                component->uint64_vars[i] = 5;
+                break;
+            case FMI_UINT64_UINT64PARAMETER_IDX:
+                component->uint64_vars[i] = 4;
+                break;
+            case FMI_UINT64_UINT64CALCULATEDPARAMETER_IDX:
+                component->uint64_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_INT64_VARS; i++) {
+        switch (i) {
+            case FMI_INT64_INT64INPUT_IDX:
+                component->int64_vars[i] = 1;
+                break;
+            case FMI_INT64_INT64OUTPUT_IDX:
+                component->int64_vars[i] = 4;
+                break;
+            case FMI_INT64_INT64CONSTANT_IDX:
+                component->int64_vars[i] = 5;
+                break;
+            case FMI_INT64_INT64PARAMETER_IDX:
+                component->int64_vars[i] = 4;
+                break;
+            case FMI_INT64_INT64CALCULATEDPARAMETER_IDX:
+                component->int64_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_UINT32_VARS; i++) {
+        switch (i) {
+            case FMI_UINT32_UINT32INPUT_IDX:
+                component->uint32_vars[i] = 1;
+                break;
+            case FMI_UINT32_UINT32OUTPUT_IDX:
+                component->uint32_vars[i] = 4;
+                break;
+            case FMI_UINT32_UINT32CONSTANT_IDX:
+                component->uint32_vars[i] = 5;
+                break;
+            case FMI_UINT32_UINT32PARAMETER_IDX:
+                component->uint32_vars[i] = 4;
+                break;
+            case FMI_UINT32_UINT32CALCULATEDPARAMETER_IDX:
+                component->uint32_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_INT32_VARS; i++) {
+        switch (i) {
+            case FMI_INT32_INT32INPUT_IDX:
+                component->int32_vars[i] = 1;
+                break;
+            case FMI_INT32_INT32OUTPUT_IDX:
+                component->int32_vars[i] = 4;
+                break;
+            case FMI_INT32_INT32CONSTANT_IDX:
+                component->int32_vars[i] = 5;
+                break;
+            case FMI_INT32_INT32PARAMETER_IDX:
+                component->int32_vars[i] = 4;
+                break;
+            case FMI_INT32_INT32CALCULATEDPARAMETER_IDX:
+                component->int32_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_UINT16_VARS; i++) {
+        switch (i) {
+            case FMI_UINT16_UINT16INPUT_IDX:
+                component->uint16_vars[i] = 1;
+                break;
+            case FMI_UINT16_UINT16OUTPUT_IDX:
+                component->uint16_vars[i] = 4;
+                break;
+            case FMI_UINT16_UINT16CONSTANT_IDX:
+                component->uint16_vars[i] = 5;
+                break;
+            case FMI_UINT16_UINT16PARAMETER_IDX:
+                component->uint16_vars[i] = 4;
+                break;
+            case FMI_UINT16_UINT16CALCULATEDPARAMETER_IDX:
+                component->uint16_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_INT16_VARS; i++) {
+        switch (i) {
+            case FMI_INT16_INT16INPUT_IDX:
+                component->int16_vars[i] = 1;
+                break;
+            case FMI_INT16_INT16OUTPUT_IDX:
+                component->int16_vars[i] = 4;
+                break;
+            case FMI_INT16_INT16CONSTANT_IDX:
+                component->int16_vars[i] = 5;
+                break;
+            case FMI_INT16_INT16PARAMETER_IDX:
+                component->int16_vars[i] = 4;
+                break;
+            case FMI_INT16_INT16CALCULATEDPARAMETER_IDX:
+                component->int16_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_UINT8_VARS; i++) {
+        switch (i) {
+            case FMI_UINT8_UINT8INPUT_IDX:
+                component->uint8_vars[i] = 1;
+                break;
+            case FMI_UINT8_UINT8OUTPUT_IDX:
+                component->uint8_vars[i] = 4;
+                break;
+            case FMI_UINT8_UINT8CONSTANT_IDX:
+                component->uint8_vars[i] = 5;
+                break;
+            case FMI_UINT8_UINT8PARAMETER_IDX:
+                component->uint8_vars[i] = 4;
+                break;
+            case FMI_UINT8_UINT8CALCULATEDPARAMETER_IDX:
+                component->uint8_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_INT8_VARS; i++) {
+        switch (i) {
+            case FMI_INT8_INT8INPUT_IDX:
+                component->int8_vars[i] = 1;
+                break;
+            case FMI_INT8_INT8OUTPUT_IDX:
+                component->int8_vars[i] = 4;
+                break;
+            case FMI_INT8_INT8CONSTANT_IDX:
+                component->int8_vars[i] = 5;
+                break;
+            case FMI_INT8_INT8PARAMETER_IDX:
+                component->int8_vars[i] = 4;
+                break;
+            case FMI_INT8_INT8CALCULATEDPARAMETER_IDX:
+                component->int8_vars[i] = 20;
+                break;
+        }
+    }
 
     /* Reals */
-    for (i = 0; i<FMI_FLOAT64_VARS; i++)
-        component->float64_vars[i] = 0.0;
-    for (i = 0; i<FMI_FLOAT32_VARS; i++)
-        component->float32_vars[i] = 0.0;
+    for (i = 0; i<FMI_FLOAT64_VARS; i++) {
+        switch (i) {
+            case FMI_FLOAT64_FLOAT64INPUT_IDX:
+                component->float64_vars[i] = 1;
+                break;
+            case FMI_FLOAT64_FLOAT64OUTPUT_IDX:
+                component->float64_vars[i] = 4;
+                break;
+            case FMI_FLOAT64_FLOAT64CONSTANT_IDX:
+                component->float64_vars[i] = 5;
+                break;
+            case FMI_FLOAT64_FLOAT64PARAMETER_IDX:
+                component->float64_vars[i] = 4;
+                break;
+            case FMI_FLOAT64_FLOAT64CALCULATEDPARAMETER_IDX:
+                component->float64_vars[i] = 20;
+                break;
+        }
+    }
+    for (i = 0; i<FMI_FLOAT32_VARS; i++) {
+        switch (i) {
+            case FMI_FLOAT32_FLOAT32INPUT_IDX:
+                component->float32_vars[i] = 1;
+                break;
+            case FMI_FLOAT32_FLOAT32OUTPUT_IDX:
+                component->float32_vars[i] = 4;
+                break;
+            case FMI_FLOAT32_FLOAT32CONSTANT_IDX:
+                component->float32_vars[i] = 5;
+                break;
+            case FMI_FLOAT32_FLOAT32PARAMETER_IDX:
+                component->float32_vars[i] = 4;
+                break;
+            case FMI_FLOAT32_FLOAT32CALCULATEDPARAMETER_IDX:
+                component->float32_vars[i] = 20;
+                break;
+        }
+    }
 
     /* Strings */
-    for (i = 0; i<FMI_STRING_VARS; i++)
-        component->string_vars[i] = strdup("");
+    for (i = 0; i<FMI_STRING_VARS; i++) {
+        switch (i) {
+            case FMI_STRING_STRINGINPUT_IDX:
+                component->string_vars[i] = strdup("abcd");
+                break;
+            case FMI_STRING_STRINGOUTPUT_IDX:
+                component->string_vars[i] = strdup("abcdefgh");
+                break;
+            case FMI_STRING_STRINGCONSTANT_IDX:
+                component->string_vars[i] = strdup("ijkl");
+                break;
+            case FMI_STRING_STRINGPARAMETER_IDX:
+                component->string_vars[i] = strdup("efgh");
+                break;
+            case FMI_STRING_STRINGCALCULATEDPARAMETER_IDX:
+                component->string_vars[i] = strdup("efghijkl");
+                break;
+        }
+    }
 
     /* Binaries */
     for (i = 0; i<FMI_BINARY_VARS; i++) {
@@ -121,6 +320,43 @@ fmi3Status doInit(SimpleVariableTest component)
 fmi3Status doInitCalc(SimpleVariableTest component)
 {
     DEBUGBREAK();
+
+    component->boolean_vars[FMI_BOOLEAN_BOOLEANCALCULATEDPARAMETER_IDX] =
+        FMI_BOOLEAN_XOR(component->boolean_vars[FMI_BOOLEAN_BOOLEANPARAMETER_IDX],component->boolean_vars[FMI_BOOLEAN_BOOLEANCONSTANT_IDX]);
+
+    component->uint64_vars[FMI_UINT64_UINT64CALCULATEDPARAMETER_IDX] =
+        component->uint64_vars[FMI_UINT64_UINT64PARAMETER_IDX] * component->uint64_vars[FMI_UINT64_UINT64CONSTANT_IDX];
+    component->int64_vars[FMI_INT64_INT64CALCULATEDPARAMETER_IDX] =
+        component->int64_vars[FMI_INT64_INT64PARAMETER_IDX] * component->int64_vars[FMI_INT64_INT64CONSTANT_IDX];
+    component->uint32_vars[FMI_UINT32_UINT32CALCULATEDPARAMETER_IDX] =
+        component->uint32_vars[FMI_UINT32_UINT32PARAMETER_IDX] * component->uint32_vars[FMI_UINT32_UINT32CONSTANT_IDX];
+    component->int32_vars[FMI_INT32_INT32CALCULATEDPARAMETER_IDX] =
+        component->int32_vars[FMI_INT32_INT32PARAMETER_IDX] * component->int32_vars[FMI_INT32_INT32CONSTANT_IDX];
+    component->uint16_vars[FMI_UINT16_UINT16CALCULATEDPARAMETER_IDX] =
+        component->uint16_vars[FMI_UINT16_UINT16PARAMETER_IDX] * component->uint16_vars[FMI_UINT16_UINT16CONSTANT_IDX];
+    component->int16_vars[FMI_INT16_INT16CALCULATEDPARAMETER_IDX] =
+        component->int16_vars[FMI_INT16_INT16PARAMETER_IDX] * component->int16_vars[FMI_INT16_INT16CONSTANT_IDX];
+    component->uint8_vars[FMI_UINT8_UINT8CALCULATEDPARAMETER_IDX] =
+        component->uint8_vars[FMI_UINT8_UINT8PARAMETER_IDX] * component->uint8_vars[FMI_UINT8_UINT8CONSTANT_IDX];
+    component->int8_vars[FMI_INT8_INT8CALCULATEDPARAMETER_IDX] =
+        component->int8_vars[FMI_INT8_INT8PARAMETER_IDX] * component->int8_vars[FMI_INT8_INT8CONSTANT_IDX];
+
+    component->float64_vars[FMI_FLOAT64_FLOAT64CALCULATEDPARAMETER_IDX] =
+        component->float64_vars[FMI_FLOAT64_FLOAT64PARAMETER_IDX] * component->float64_vars[FMI_FLOAT64_FLOAT64CONSTANT_IDX];
+    component->float32_vars[FMI_FLOAT32_FLOAT32CALCULATEDPARAMETER_IDX] =
+        component->float32_vars[FMI_FLOAT32_FLOAT32PARAMETER_IDX] * component->float32_vars[FMI_FLOAT32_FLOAT32CONSTANT_IDX];
+
+    {
+        my3String buffer;
+        size_t buffer_length = 1;
+        buffer_length += strlen(component->string_vars[FMI_STRING_STRINGPARAMETER_IDX]);
+        buffer_length += strlen(component->string_vars[FMI_STRING_STRINGCONSTANT_IDX]);
+        free(component->string_vars[FMI_STRING_STRINGCALCULATEDPARAMETER_IDX]);
+        buffer = malloc(buffer_length);
+        strcpy(buffer,component->string_vars[FMI_STRING_STRINGPARAMETER_IDX]);
+        strcat(buffer,component->string_vars[FMI_STRING_STRINGCONSTANT_IDX]);
+        component->string_vars[FMI_STRING_STRINGCALCULATEDPARAMETER_IDX] = buffer;
+    }
 
     free(component->binary_vars[FMI_BINARY_BINARYCALCULATEDPARAMETER_IDX]);
     component->binary_sizes[FMI_BINARY_BINARYCALCULATEDPARAMETER_IDX]=component->binary_sizes[FMI_BINARY_BINARYPARAMETER_IDX];
@@ -162,6 +398,43 @@ fmi3Status doCalc(SimpleVariableTest component, fmi3Float64 currentCommunication
     DEBUGBREAK();
 
     doInitCalc(component);
+
+    component->boolean_vars[FMI_BOOLEAN_BOOLEANOUTPUT_IDX] =
+        FMI_BOOLEAN_XOR(component->boolean_vars[FMI_BOOLEAN_BOOLEANPARAMETER_IDX],component->boolean_vars[FMI_BOOLEAN_BOOLEANINPUT_IDX]);
+
+    component->uint64_vars[FMI_UINT64_UINT64OUTPUT_IDX] =
+        component->uint64_vars[FMI_UINT64_UINT64PARAMETER_IDX] * component->uint64_vars[FMI_UINT64_UINT64INPUT_IDX];
+    component->int64_vars[FMI_INT64_INT64OUTPUT_IDX] =
+        component->int64_vars[FMI_INT64_INT64PARAMETER_IDX] * component->int64_vars[FMI_INT64_INT64INPUT_IDX];
+    component->uint32_vars[FMI_UINT32_UINT32OUTPUT_IDX] =
+        component->uint32_vars[FMI_UINT32_UINT32PARAMETER_IDX] * component->uint32_vars[FMI_UINT32_UINT32INPUT_IDX];
+    component->int32_vars[FMI_INT32_INT32OUTPUT_IDX] =
+        component->int32_vars[FMI_INT32_INT32PARAMETER_IDX] * component->int32_vars[FMI_INT32_INT32INPUT_IDX];
+    component->uint16_vars[FMI_UINT16_UINT16OUTPUT_IDX] =
+        component->uint16_vars[FMI_UINT16_UINT16PARAMETER_IDX] * component->uint16_vars[FMI_UINT16_UINT16INPUT_IDX];
+    component->int16_vars[FMI_INT16_INT16OUTPUT_IDX] =
+        component->int16_vars[FMI_INT16_INT16PARAMETER_IDX] * component->int16_vars[FMI_INT16_INT16INPUT_IDX];
+    component->uint8_vars[FMI_UINT8_UINT8OUTPUT_IDX] =
+        component->uint8_vars[FMI_UINT8_UINT8PARAMETER_IDX] * component->uint8_vars[FMI_UINT8_UINT8INPUT_IDX];
+    component->int8_vars[FMI_INT8_INT8OUTPUT_IDX] =
+        component->int8_vars[FMI_INT8_INT8PARAMETER_IDX] * component->int8_vars[FMI_INT8_INT8INPUT_IDX];
+
+    component->float64_vars[FMI_FLOAT64_FLOAT64OUTPUT_IDX] =
+        component->float64_vars[FMI_FLOAT64_FLOAT64PARAMETER_IDX] * component->float64_vars[FMI_FLOAT64_FLOAT64INPUT_IDX];
+    component->float32_vars[FMI_FLOAT32_FLOAT32OUTPUT_IDX] =
+        component->float32_vars[FMI_FLOAT32_FLOAT32PARAMETER_IDX] * component->float32_vars[FMI_FLOAT32_FLOAT32INPUT_IDX];
+
+    {
+        my3String buffer;
+        size_t buffer_length = 1;
+        buffer_length += strlen(component->string_vars[FMI_STRING_STRINGINPUT_IDX]);
+        buffer_length += strlen(component->string_vars[FMI_STRING_STRINGPARAMETER_IDX]);
+        free(component->string_vars[FMI_STRING_STRINGOUTPUT_IDX]);
+        buffer = malloc(buffer_length);
+        strcpy(buffer,component->string_vars[FMI_STRING_STRINGINPUT_IDX]);
+        strcat(buffer,component->string_vars[FMI_STRING_STRINGPARAMETER_IDX]);
+        component->string_vars[FMI_STRING_STRINGOUTPUT_IDX] = buffer;
+    }
 
     free(component->binary_vars[FMI_BINARY_BINARYOUTPUT_IDX]);
     component->binary_sizes[FMI_BINARY_BINARYOUTPUT_IDX]=component->binary_sizes[FMI_BINARY_BINARYINPUT_IDX];
@@ -629,6 +902,7 @@ FMI3_Export fmi3Status fmi3SetFloat64(fmi3Instance instance, const fmi3ValueRefe
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetFloat64(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -638,8 +912,9 @@ FMI3_Export fmi3Status fmi3SetFloat64(fmi3Instance instance, const fmi3ValueRefe
             myc->float64_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_FLOAT64_FLOAT64PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -648,6 +923,7 @@ FMI3_Export fmi3Status fmi3SetFloat32(fmi3Instance instance, const fmi3ValueRefe
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetFloat32(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -657,8 +933,9 @@ FMI3_Export fmi3Status fmi3SetFloat32(fmi3Instance instance, const fmi3ValueRefe
             myc->float32_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_FLOAT32_FLOAT32PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -667,6 +944,7 @@ FMI3_Export fmi3Status fmi3SetUInt64(fmi3Instance instance, const fmi3ValueRefer
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt64(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -676,8 +954,9 @@ FMI3_Export fmi3Status fmi3SetUInt64(fmi3Instance instance, const fmi3ValueRefer
             myc->uint64_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_UINT64_UINT64PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -686,6 +965,7 @@ FMI3_Export fmi3Status fmi3SetInt64(fmi3Instance instance, const fmi3ValueRefere
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt64(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -695,8 +975,9 @@ FMI3_Export fmi3Status fmi3SetInt64(fmi3Instance instance, const fmi3ValueRefere
             myc->int64_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_INT64_INT64PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -705,6 +986,7 @@ FMI3_Export fmi3Status fmi3SetUInt32(fmi3Instance instance, const fmi3ValueRefer
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt32(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -714,8 +996,9 @@ FMI3_Export fmi3Status fmi3SetUInt32(fmi3Instance instance, const fmi3ValueRefer
             myc->uint32_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_UINT32_UINT32PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -724,6 +1007,7 @@ FMI3_Export fmi3Status fmi3SetInt32(fmi3Instance instance, const fmi3ValueRefere
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt32(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -733,8 +1017,9 @@ FMI3_Export fmi3Status fmi3SetInt32(fmi3Instance instance, const fmi3ValueRefere
             myc->int32_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_INT32_INT32PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -743,6 +1028,7 @@ FMI3_Export fmi3Status fmi3SetUInt16(fmi3Instance instance, const fmi3ValueRefer
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt16(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -752,8 +1038,9 @@ FMI3_Export fmi3Status fmi3SetUInt16(fmi3Instance instance, const fmi3ValueRefer
             myc->uint16_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_UINT16_UINT16PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -762,6 +1049,7 @@ FMI3_Export fmi3Status fmi3SetInt16(fmi3Instance instance, const fmi3ValueRefere
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt16(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -771,8 +1059,9 @@ FMI3_Export fmi3Status fmi3SetInt16(fmi3Instance instance, const fmi3ValueRefere
             myc->int16_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_INT16_INT16PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -781,6 +1070,7 @@ FMI3_Export fmi3Status fmi3SetUInt8(fmi3Instance instance, const fmi3ValueRefere
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt8(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -790,8 +1080,9 @@ FMI3_Export fmi3Status fmi3SetUInt8(fmi3Instance instance, const fmi3ValueRefere
             myc->uint8_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_UINT8_UINT8PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -800,6 +1091,7 @@ FMI3_Export fmi3Status fmi3SetInt8(fmi3Instance instance, const fmi3ValueReferen
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt8(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -809,8 +1101,9 @@ FMI3_Export fmi3Status fmi3SetInt8(fmi3Instance instance, const fmi3ValueReferen
             myc->int8_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_INT8_INT8PARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -819,6 +1112,7 @@ FMI3_Export fmi3Status fmi3SetBoolean(fmi3Instance instance, const fmi3ValueRefe
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetBoolean(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -828,8 +1122,9 @@ FMI3_Export fmi3Status fmi3SetBoolean(fmi3Instance instance, const fmi3ValueRefe
             myc->boolean_vars[idx] = values[i];
         else
             return fmi3Error;
+        tuned |= (idx == FMI_BOOLEAN_BOOLEANPARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -838,6 +1133,7 @@ FMI3_Export fmi3Status fmi3SetString(fmi3Instance instance, const fmi3ValueRefer
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetString(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -848,8 +1144,9 @@ FMI3_Export fmi3Status fmi3SetString(fmi3Instance instance, const fmi3ValueRefer
             myc->string_vars[idx] = strdup(values[i]);
         } else
             return fmi3Error;
+        tuned |= (idx == FMI_STRING_STRINGPARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
@@ -858,6 +1155,7 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     size_t i;
+    int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetBinary(...)");
     if (nValues != nValueReferences)
         return fmi3Error;
@@ -873,8 +1171,9 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
                 myc->binary_vars[idx] = NULL;
         } else
             return fmi3Error;
+        tuned |= (idx == FMI_BINARY_BINARYPARAMETER_IDX);
     }
-    if (myc->init_mode)
+    if (myc->init_mode || tuned)
         doInitCalc(myc);
     return fmi3OK;
 }
