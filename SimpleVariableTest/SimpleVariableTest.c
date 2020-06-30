@@ -1,5 +1,5 @@
 /*
- * PMSF FMU Framework for FMI 2.0 Co-Simulation FMUs
+ * PMSF FMU Framework for FMI 3.0 Co-Simulation FMUs
  *
  * (C) 2016 -- 2020 PMSF IT Consulting Pierre R. Mai
  *
