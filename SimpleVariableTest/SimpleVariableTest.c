@@ -234,6 +234,9 @@ fmi3Status doInit(SimpleVariableTest component)
     /* Reals */
     for (i = 0; i<FMI_FLOAT64_VARS; i++) {
         switch (i) {
+            case FMI_FLOAT64_TIME_IDX:
+                component->float64_vars[i] = 0.0;
+                break;
             case FMI_FLOAT64_FLOAT64INPUT_IDX:
                 component->float64_vars[i] = 1;
                 break;
@@ -382,6 +385,7 @@ fmi3Status doInitCalc(SimpleVariableTest component)
 fmi3Status doEnterInitializationMode(SimpleVariableTest component, fmi3Boolean toleranceDefined, fmi3Float64 tolerance, fmi3Float64 startTime, fmi3Boolean stopTimeDefined, fmi3Float64 stopTime)
 {
     component->last_time = startTime;
+    component->float64_vars[FMI_FLOAT64_TIME_IDX] = component->last_time;
     component->init_mode = fmi3True;
     doInitCalc(component);
     return fmi3OK;
@@ -393,7 +397,7 @@ fmi3Status doExitInitializationMode(SimpleVariableTest component)
     return fmi3OK;
 }
 
-fmi3Status doCalc(SimpleVariableTest component, fmi3Float64 currentCommunicationPoint, fmi3Float64 communicationStepSize, fmi3Boolean noSetFMUStatePriorToCurrentPoint, fmi3Boolean* earlyReturn)
+fmi3Status doCalc(SimpleVariableTest component, fmi3Float64 currentCommunicationPoint, fmi3Float64 communicationStepSize, fmi3Boolean noSetFMUStatePriorToCurrentPoint, fmi3Boolean* terminate, fmi3Boolean* earlyReturn, fmi3Float64* lastSuccessfulTime)
 {
     DEBUGBREAK();
 
@@ -463,6 +467,10 @@ fmi3Status doCalc(SimpleVariableTest component, fmi3Float64 currentCommunication
         component->binary_vars[FMI_BINARY_XOROUTPUT_IDX]=NULL;
 
     component->last_time=currentCommunicationPoint+communicationStepSize;
+    component->float64_vars[FMI_FLOAT64_TIME_IDX] = component->last_time;
+    *lastSuccessfulTime = component->last_time;
+    *earlyReturn = fmi3False;
+    *terminate = fmi3False;
     return fmi3OK;
 }
 
@@ -536,9 +544,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     fmi3String                     resourceLocation,
     fmi3Boolean                    visible,
     fmi3Boolean                    loggingOn,
-    fmi3Boolean                    intermediateVariableGetRequired,
-    fmi3Boolean                    intermediateInternalVariableGetRequired,
-    fmi3Boolean                    intermediateVariableSetRequired,
+    const fmi3ValueReference       intermediateVariablesGetRequired[],
+    size_t                         nIntermediateVariablesGetRequired,
+    const fmi3ValueReference       intermediateVariablesSetRequired[],
+    size_t                         nIntermediateVariablesSetRequired,
     fmi3InstanceEnvironment        instanceEnvironment,
     fmi3CallbackLogMessage         logMessage,
     fmi3CallbackIntermediateUpdate intermediateUpdate)
@@ -547,11 +556,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
 
 #ifdef FMU_TOKEN
     if (instantiationToken!=NULL && 0!=strcmp(instantiationToken,FMU_TOKEN)) {
-        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,%d,...) = NULL (GUID mismatch, expected %s)",
+        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = NULL (GUID mismatch, expected %s)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
             visible, loggingOn,
-            intermediateVariableGetRequired, intermediateInternalVariableGetRequired, intermediateVariableSetRequired,
             FMU_TOKEN);
         return NULL;
     }
@@ -560,11 +568,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     myc = calloc(1,sizeof(struct SimpleVariableTest));
 
     if (myc == NULL) {
-        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,%d,...) = NULL (alloc failure)",
+        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = NULL (alloc failure)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn,
-            intermediateVariableGetRequired, intermediateInternalVariableGetRequired, intermediateVariableSetRequired);
+            visible, loggingOn);
         return NULL;
     }
 
@@ -573,9 +580,6 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     myc->resourceLocation=strdup(resourceLocation);
     myc->visible=visible;
     myc->loggingOn=loggingOn;
-    myc->intermediateVariableGetRequired=intermediateVariableGetRequired;
-    myc->intermediateInternalVariableGetRequired=intermediateInternalVariableGetRequired;
-    myc->intermediateVariableSetRequired=intermediateVariableSetRequired;
     myc->functions.logMessage=logMessage;
     myc->functions.intermediateUpdate=intermediateUpdate;
     myc->functions.instanceEnvironment=instanceEnvironment;
@@ -590,11 +594,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     }
 
     if (doInit(myc) != fmi3OK) {
-        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,%d,...) = NULL (doInit failure)",
+        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = NULL (doInit failure)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn,
-            intermediateVariableGetRequired, intermediateInternalVariableGetRequired, intermediateVariableSetRequired);
+            visible, loggingOn);
         free(myc->resourceLocation);
         free(myc->instantiationToken);
         free(myc->instanceName);
@@ -603,11 +606,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
         free(myc);
         return NULL;
     }
-    fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,%d,...) = %p",
+    fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = %p",
         instanceName, instantiationToken,
         (resourceLocation != NULL) ? resourceLocation : "<NULL>",
         visible, loggingOn,
-        intermediateVariableGetRequired, intermediateInternalVariableGetRequired, intermediateVariableSetRequired,
         myc);
 
     return (fmi3Instance)myc;
@@ -636,11 +638,13 @@ FMI3_Export fmi3Status fmi3DoStep(fmi3Instance instance,
     fmi3Float64 currentCommunicationPoint,
     fmi3Float64 communicationStepSize,
     fmi3Boolean noSetFMUStatePriorToCurrentPoint,
-    fmi3Boolean* earlyReturn)
+    fmi3Boolean* terminate,
+    fmi3Boolean* earlyReturn,
+    fmi3Float64* lastSuccessfulTime)
 {
     SimpleVariableTest myc = (SimpleVariableTest)instance;
     fmi_verbose_log(myc,"fmi3DoStep(%g,%g,%d,%p)", currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, earlyReturn);
-    return doCalc(myc,currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, earlyReturn);
+    return doCalc(myc,currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, terminate, earlyReturn, lastSuccessfulTime);
 }
 
 FMI3_Export fmi3Status fmi3Terminate(fmi3Instance instance)

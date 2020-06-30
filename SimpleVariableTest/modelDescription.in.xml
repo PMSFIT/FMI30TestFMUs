@@ -155,69 +155,72 @@
     <Variable name="Int8CalculatedParameter" valueReference="44" causality="calculatedParameter" variability="tunable">
       <Int8 start="20"/>
     </Variable>
-    <Variable name="Float64Input" valueReference="45" causality="input" variability="discrete">
+    <Variable name="Time" valueReference="45" causality="independent" variability="continuous">
+      <Float64/>
+    </Variable>
+    <Variable name="Float64Input" valueReference="46" causality="input" variability="discrete">
       <Float64 start="1"/>
     </Variable>
-    <Variable name="Float64Output" valueReference="46" causality="output" variability="discrete" initial="exact">
+    <Variable name="Float64Output" valueReference="47" causality="output" variability="discrete" initial="exact">
       <Float64 start="4"/>
     </Variable>
-    <Variable name="Float64Constant" valueReference="47" causality="output" variability="constant" initial="exact">
+    <Variable name="Float64Constant" valueReference="48" causality="output" variability="constant" initial="exact">
       <Float64 start="5"/>
     </Variable>
-    <Variable name="Float64Parameter" valueReference="48" causality="parameter" variability="tunable">
+    <Variable name="Float64Parameter" valueReference="49" causality="parameter" variability="tunable">
       <Float64 start="4"/>
     </Variable>
-    <Variable name="Float64CalculatedParameter" valueReference="49" causality="calculatedParameter" variability="tunable">
+    <Variable name="Float64CalculatedParameter" valueReference="50" causality="calculatedParameter" variability="tunable">
       <Float64 start="20"/>
     </Variable>
-    <Variable name="Float32Input" valueReference="50" causality="input" variability="discrete">
+    <Variable name="Float32Input" valueReference="51" causality="input" variability="discrete">
       <Float32 start="1"/>
     </Variable>
-    <Variable name="Float32Output" valueReference="51" causality="output" variability="discrete" initial="exact">
+    <Variable name="Float32Output" valueReference="52" causality="output" variability="discrete" initial="exact">
       <Float32 start="4"/>
     </Variable>
-    <Variable name="Float32Constant" valueReference="52" causality="output" variability="constant" initial="exact">
+    <Variable name="Float32Constant" valueReference="53" causality="output" variability="constant" initial="exact">
       <Float32 start="5"/>
     </Variable>
-    <Variable name="Float32Parameter" valueReference="53" causality="parameter" variability="tunable">
+    <Variable name="Float32Parameter" valueReference="54" causality="parameter" variability="tunable">
       <Float32 start="4"/>
     </Variable>
-    <Variable name="Float32CalculatedParameter" valueReference="54" causality="calculatedParameter" variability="tunable">
+    <Variable name="Float32CalculatedParameter" valueReference="55" causality="calculatedParameter" variability="tunable">
       <Float32 start="20"/>
     </Variable>
-    <Variable name="StringInput" valueReference="55" causality="input" variability="discrete">
+    <Variable name="StringInput" valueReference="56" causality="input" variability="discrete">
       <String start="abcd"/>
     </Variable>
-    <Variable name="StringOutput" valueReference="56" causality="output" variability="discrete" initial="exact">
+    <Variable name="StringOutput" valueReference="57" causality="output" variability="discrete" initial="exact">
       <String start="abcdefgh"/>
     </Variable>
-    <Variable name="StringConstant" valueReference="57" causality="output" variability="constant" initial="exact">
+    <Variable name="StringConstant" valueReference="58" causality="output" variability="constant" initial="exact">
       <String start="ijkl"/>
     </Variable>
-    <Variable name="StringParameter" valueReference="58" causality="parameter" variability="tunable">
+    <Variable name="StringParameter" valueReference="59" causality="parameter" variability="tunable">
       <String start="efgh"/>
     </Variable>
-    <Variable name="StringCalculatedParameter" valueReference="59" causality="calculatedParameter" variability="tunable">
+    <Variable name="StringCalculatedParameter" valueReference="60" causality="calculatedParameter" variability="tunable">
       <String start="efghijkl"/>
     </Variable>
-    <Variable name="BinaryInput" valueReference="60" causality="input" variability="discrete">
+    <Variable name="BinaryInput" valueReference="61" causality="input" variability="discrete">
       <Binary start=""/>
     </Variable>
-    <Variable name="BinaryOutput" valueReference="61" causality="output" variability="discrete" initial="exact">
+    <Variable name="BinaryOutput" valueReference="62" causality="output" variability="discrete" initial="exact">
       <Binary start=""/>
     </Variable>
-    <Variable name="XOROutput" valueReference="62" causality="output" variability="discrete" initial="exact">
+    <Variable name="XOROutput" valueReference="63" causality="output" variability="discrete" initial="exact">
       <Binary start=""/>
     </Variable>
-    <Variable name="BinaryConstant" valueReference="63" causality="output" variability="constant" initial="exact">
+    <Variable name="BinaryConstant" valueReference="64" causality="output" variability="constant" initial="exact">
       <Binary start="BEEF"/>
     </Variable>
-    <Variable name="BinaryParameter" valueReference="64" causality="parameter" variability="tunable">
+    <Variable name="BinaryParameter" valueReference="65" causality="parameter" variability="tunable">
       <Binary start="1DE4"/>
     </Variable>
-    <Variable name="BinaryCalculatedParameter" valueReference="65" causality="calculatedParameter" variability="tunable">
+    <Variable name="BinaryCalculatedParameter" valueReference="66" causality="calculatedParameter" variability="tunable">
       <Binary start="A30B"/>
-    </Variable>
+    </Variable>    
   </ModelVariables>
   <ModelStructure>
     <Outputs>
@@ -239,15 +242,15 @@
       <Unknown valueReference="37"/>
       <Unknown valueReference="41"/>
       <Unknown valueReference="42"/>
-      <Unknown valueReference="46"/>
       <Unknown valueReference="47"/>
-      <Unknown valueReference="51"/>
+      <Unknown valueReference="48"/>
       <Unknown valueReference="52"/>
-      <Unknown valueReference="56"/>
+      <Unknown valueReference="53"/>
       <Unknown valueReference="57"/>
-      <Unknown valueReference="61"/>
+      <Unknown valueReference="58"/>
       <Unknown valueReference="62"/>
       <Unknown valueReference="63"/>
+      <Unknown valueReference="64"/>
     </Outputs>
     <InitialUnknowns>
       <Unknown valueReference="4" dependencies="2 3"/>
@@ -259,10 +262,10 @@
       <Unknown valueReference="34" dependencies="32 33"/>
       <Unknown valueReference="39" dependencies="37 38"/>
       <Unknown valueReference="44" dependencies="42 43"/>
-      <Unknown valueReference="49" dependencies="47 48"/>
-      <Unknown valueReference="54" dependencies="52 53"/>
-      <Unknown valueReference="59" dependencies="57 58"/>
-      <Unknown valueReference="65" dependencies="63 64"/>
+      <Unknown valueReference="51" dependencies="48 49"/>
+      <Unknown valueReference="55" dependencies="53 54"/>
+      <Unknown valueReference="60" dependencies="58 59"/>
+      <Unknown valueReference="66" dependencies="64 65"/>
     </InitialUnknowns>
   </ModelStructure>
 </fmiModelDescription>

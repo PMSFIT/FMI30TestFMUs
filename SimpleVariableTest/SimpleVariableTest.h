@@ -134,11 +134,12 @@ typedef fmi3Char* my3String;
 
 /* Real Variables */
 #define FMI_FLOAT64_BASE_VR (FMI_INT8_BASE_VR + FMI_INT8_VARS)
-#define FMI_FLOAT64_FLOAT64INPUT_IDX 0
-#define FMI_FLOAT64_FLOAT64OUTPUT_IDX 1
-#define FMI_FLOAT64_FLOAT64CONSTANT_IDX 2
-#define FMI_FLOAT64_FLOAT64PARAMETER_IDX 3
-#define FMI_FLOAT64_FLOAT64CALCULATEDPARAMETER_IDX 4
+#define FMI_FLOAT64_TIME_IDX 0
+#define FMI_FLOAT64_FLOAT64INPUT_IDX 1
+#define FMI_FLOAT64_FLOAT64OUTPUT_IDX 2
+#define FMI_FLOAT64_FLOAT64CONSTANT_IDX 3
+#define FMI_FLOAT64_FLOAT64PARAMETER_IDX 4
+#define FMI_FLOAT64_FLOAT64CALCULATEDPARAMETER_IDX 5
 #define FMI_FLOAT64_LAST_IDX FMI_FLOAT64_FLOAT64CALCULATEDPARAMETER_IDX
 #define FMI_FLOAT64_VARS (FMI_FLOAT64_LAST_IDX+1)
 
@@ -200,9 +201,6 @@ typedef struct SimpleVariableTest {
     my3String resourceLocation;
     fmi3Boolean visible;
     fmi3Boolean loggingOn;
-    fmi3Boolean intermediateVariableGetRequired;
-    fmi3Boolean intermediateInternalVariableGetRequired;
-    fmi3Boolean intermediateVariableSetRequired;
     size_t nCategories;
     char** loggingCategories;
     fmi3CallbackFunctionsVar functions;
