@@ -497,7 +497,7 @@ void doFree(SimpleVariableTest component)
 }
 
 /*
- * FMI 3.0 Basic Co-Simulation Interface API
+ * FMI 3.0 Co-Simulation Interface API
  */
 
 FMI3_Export const char* fmi3GetVersion()
@@ -538,16 +538,15 @@ FMI3_Export fmi3Status fmi3SetDebugLogging(fmi3Instance instance, fmi3Boolean lo
 /*
  * Functions for Co-Simulation
  */
-FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
+FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     fmi3String                     instanceName,
     fmi3String                     instantiationToken,
     fmi3String                     resourceLocation,
     fmi3Boolean                    visible,
     fmi3Boolean                    loggingOn,
-    const fmi3ValueReference       intermediateVariablesGetRequired[],
-    size_t                         nIntermediateVariablesGetRequired,
-    const fmi3ValueReference       intermediateVariablesSetRequired[],
-    size_t                         nIntermediateVariablesSetRequired,
+    fmi3Boolean                    eventModeRequired,
+    const fmi3ValueReference       requiredIntermediateVariables[],
+    size_t                         nRequiredIntermediateVariables,
     fmi3InstanceEnvironment        instanceEnvironment,
     fmi3CallbackLogMessage         logMessage,
     fmi3CallbackIntermediateUpdate intermediateUpdate)
@@ -556,10 +555,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
 
 #ifdef FMU_TOKEN
     if (instantiationToken!=NULL && 0!=strcmp(instantiationToken,FMU_TOKEN)) {
-        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = NULL (GUID mismatch, expected %s)",
+        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = NULL (GUID mismatch, expected %s)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn,
+            visible, loggingOn, eventModeRequired,
             FMU_TOKEN);
         return NULL;
     }
@@ -568,10 +567,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     myc = calloc(1,sizeof(struct SimpleVariableTest));
 
     if (myc == NULL) {
-        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = NULL (alloc failure)",
+        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = NULL (alloc failure)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn);
+            visible, loggingOn, eventModeRequired);
         return NULL;
     }
 
@@ -580,6 +579,7 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     myc->resourceLocation=strdup(resourceLocation);
     myc->visible=visible;
     myc->loggingOn=loggingOn;
+    myc->eventModeRequired=eventModeRequired;
     myc->functions.logMessage=logMessage;
     myc->functions.intermediateUpdate=intermediateUpdate;
     myc->functions.instanceEnvironment=instanceEnvironment;
@@ -594,10 +594,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
     }
 
     if (doInit(myc) != fmi3OK) {
-        fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = NULL (doInit failure)",
+        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = NULL (doInit failure)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn);
+            visible, loggingOn, eventModeRequired);
         free(myc->resourceLocation);
         free(myc->instantiationToken);
         free(myc->instanceName);
@@ -606,10 +606,10 @@ FMI3_Export fmi3Instance fmi3InstantiateBasicCoSimulation(
         free(myc);
         return NULL;
     }
-    fmi_verbose_log_global("fmi3InstantiateBasicCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,...) = %p",
+    fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = %p",
         instanceName, instantiationToken,
         (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-        visible, loggingOn,
+        visible, loggingOn, eventModeRequired,
         myc);
 
     return (fmi3Instance)myc;

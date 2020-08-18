@@ -9,10 +9,11 @@
   generationTool="PMSF Manual FMU Framework"
   generationDateAndTime="@FMU_TIMESTAMP@"
   variableNamingConvention="structured">
-  <BasicCoSimulation
+  <CoSimulation
     modelIdentifier="@FMU_BCS_MODEL_IDENTIFIER@"
     canHandleVariableCommunicationStepSize="true"
-  </BasicCoSimulation>
+    hasEventMode="false">
+  </CoSimulation>
   <LogCategories>
     <Category name="FMI" description="Enable logging of all FMI calls"/>
     <Category name="BINARY" description="Enable Binary-related logging"/>

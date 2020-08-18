@@ -201,6 +201,7 @@ typedef struct SimpleVariableTest {
     my3String resourceLocation;
     fmi3Boolean visible;
     fmi3Boolean loggingOn;
+    fmi3Boolean eventModeRequired;
     size_t nCategories;
     char** loggingCategories;
     fmi3CallbackFunctionsVar functions;
