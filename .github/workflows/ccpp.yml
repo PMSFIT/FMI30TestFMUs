@@ -24,6 +24,12 @@ jobs:
     - name: make
       working-directory: build
       run: cmake --build . --config Release -j 4
+    - name: archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux64-fmus
+        path: build/*/*.fmu
+        if-no-files-found: error
 
   build-win64:
     name: Build Windows 64
@@ -42,6 +48,12 @@ jobs:
     - name: make
       working-directory: build
       run: cmake --build . --config Release -j 4
+    - name: archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: win64-fmus
+        path: build/*/*.fmu
+        if-no-files-found: error
 
   build-darwin64:
     name: Build Mac OS X 64
@@ -60,3 +72,9 @@ jobs:
     - name: make
       working-directory: build
       run: cmake --build . --config Release -j 4
+    - name: archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: darwin64-fmus
+        path: build/*/*.fmu
+        if-no-files-found: error
