@@ -31,3 +31,4 @@ set(FMU_AUTHOR "PMSF" CACHE STRING "FMU Author Information")
 
 include_directories( fmi-standard/headers )
 add_subdirectory( SimpleVariableTest )
+add_subdirectory( SimpleArrayTest )

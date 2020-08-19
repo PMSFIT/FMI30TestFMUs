@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  fmiVersion="@FMU_FMI_VERSION@"
+  modelName="@FMU_MODEL_NAME@"
+  instantiationToken="@FMU_TOKEN@"
+  description="Simple Test FMU for Scalar Variable Types"
+  author="@FMU_AUTHOR@"
+  version="@FMU_VERSION@"
+  generationTool="PMSF Manual FMU Framework"
+  generationDateAndTime="@FMU_TIMESTAMP@"
+  variableNamingConvention="structured">
+  <CoSimulation
+    modelIdentifier="@FMU_BCS_MODEL_IDENTIFIER@"
+    canHandleVariableCommunicationStepSize="true"
+    hasEventMode="false">
+  </CoSimulation>
+  <LogCategories>
+    <Category name="FMI" description="Enable logging of all FMI calls"/>
+    <Category name="BINARY" description="Enable Binary-related logging"/>
+  </LogCategories>
+  <DefaultExperiment startTime="0.0" stepSize="0.020"/>
+  <ModelVariables>
+    <Boolean name="BooleanInput" valueReference="0" causality="input" variability="discrete" start="true">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Boolean>
+    <Boolean name="BooleanOutput" valueReference="1" causality="output" variability="discrete" initial="exact" start="false">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Boolean>
+    <Boolean name="BooleanConstant" valueReference="2" causality="output" variability="constant" initial="exact" start="true">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Boolean>
+    <Boolean name="BooleanParameter" valueReference="3" causality="parameter" variability="tunable" start="true">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Boolean>
+    <Boolean name="BooleanCalculatedParameter" valueReference="4" causality="calculatedParameter" variability="tunable" start="false">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Boolean>
+    <UInt64 name="UInt64Input" valueReference="5" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt64>
+    <UInt64 name="UInt64Output" valueReference="6" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt64>
+    <UInt64 name="UInt64Constant" valueReference="7" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt64>
+    <UInt64 name="UInt64Parameter" valueReference="8" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt64>
+    <UInt64 name="UInt64CalculatedParameter" valueReference="9" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt64>
+    <Int64 name="Int64Input" valueReference="10" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int64>
+    <Int64 name="Int64Output" valueReference="11" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int64>
+    <Int64 name="Int64Constant" valueReference="12" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int64>
+    <Int64 name="Int64Parameter" valueReference="13" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int64>
+    <Int64 name="Int64CalculatedParameter" valueReference="14" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int64>
+    <UInt32 name="UInt32Input" valueReference="15" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt32>
+    <UInt32 name="UInt32Output" valueReference="16" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt32>
+    <UInt32 name="UInt32Constant" valueReference="17" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt32>
+    <UInt32 name="UInt32Parameter" valueReference="18" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt32>
+    <UInt32 name="UInt32CalculatedParameter" valueReference="19" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt32>
+    <Int32 name="Int32Input" valueReference="20" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int32>
+    <Int32 name="Int32Output" valueReference="21" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int32>
+    <Int32 name="Int32Constant" valueReference="22" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int32>
+    <Int32 name="Int32Parameter" valueReference="23" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int32>
+    <Int32 name="Int32CalculatedParameter" valueReference="24" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int32>
+    <UInt16 name="UInt16Input" valueReference="25" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt16>
+    <UInt16 name="UInt16Output" valueReference="26" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt16>
+    <UInt16 name="UInt16Constant" valueReference="27" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt16>
+    <UInt16 name="UInt16Parameter" valueReference="28" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt16>
+    <UInt16 name="UInt16CalculatedParameter" valueReference="29" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt16>
+    <Int16 name="Int16Input" valueReference="30" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int16>
+    <Int16 name="Int16Output" valueReference="31" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int16>
+    <Int16 name="Int16Constant" valueReference="32" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int16>
+    <Int16 name="Int16Parameter" valueReference="33" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int16>
+    <Int16 name="Int16CalculatedParameter" valueReference="34" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int16>
+    <UInt8 name="UInt8Input" valueReference="35" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt8>
+    <UInt8 name="UInt8Output" valueReference="36" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt8>
+    <UInt8 name="UInt8Constant" valueReference="37" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt8>
+    <UInt8 name="UInt8Parameter" valueReference="38" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt8>
+    <UInt8 name="UInt8CalculatedParameter" valueReference="39" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </UInt8>
+    <Int8 name="Int8Input" valueReference="40" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int8>
+    <Int8 name="Int8Output" valueReference="41" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int8>
+    <Int8 name="Int8Constant" valueReference="42" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int8>
+    <Int8 name="Int8Parameter" valueReference="43" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int8>
+    <Int8 name="Int8CalculatedParameter" valueReference="44" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Int8>
+    <Float64 name="Time" valueReference="45" causality="independent" variability="continuous"/>
+    <Float64 name="Float64Input" valueReference="46" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float64>
+    <Float64 name="Float64Output" valueReference="47" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float64>
+    <Float64 name="Float64Constant" valueReference="48" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float64>
+    <Float64 name="Float64Parameter" valueReference="49" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float64>
+    <Float64 name="Float64CalculatedParameter" valueReference="50" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float64>
+    <Float32 name="Float32Input" valueReference="51" causality="input" variability="discrete" start="1">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float32>
+    <Float32 name="Float32Output" valueReference="52" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float32>
+    <Float32 name="Float32Constant" valueReference="53" causality="output" variability="constant" initial="exact" start="5">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float32>
+    <Float32 name="Float32Parameter" valueReference="54" causality="parameter" variability="tunable" start="4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float32>
+    <Float32 name="Float32CalculatedParameter" valueReference="55" causality="calculatedParameter" variability="tunable" start="20">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Float32>
+    <String name="StringInput" valueReference="56" causality="input" variability="discrete">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+      <Start value="abcd"/>
+    </String>
+    <String name="StringOutput" valueReference="57" causality="output" variability="discrete" initial="exact">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+      <Start value="abcdefgh"/>
+    </String>
+    <String name="StringConstant" valueReference="58" causality="output" variability="constant" initial="exact">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+      <Start value="ijkl"/>
+    </String>
+    <String name="StringParameter" valueReference="59" causality="parameter" variability="tunable">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+      <Start value="efgh"/>
+    </String>
+    <String name="StringCalculatedParameter" valueReference="60" causality="calculatedParameter" variability="tunable">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+      <Start value="efghijkl"/>
+    </String>
+    <Binary name="BinaryInput" valueReference="61" causality="input" variability="discrete" start="">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Binary>
+    <Binary name="BinaryOutput" valueReference="62" causality="output" variability="discrete" initial="exact" start="">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Binary>
+    <Binary name="XOROutput" valueReference="63" causality="output" variability="discrete" initial="exact" start="">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Binary>
+    <Binary name="BinaryConstant" valueReference="64" causality="output" variability="constant" initial="exact" start="BEEF">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Binary>
+    <Binary name="BinaryParameter" valueReference="65" causality="parameter" variability="tunable" start="1DE4">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Binary>
+    <Binary name="BinaryCalculatedParameter" valueReference="66" causality="calculatedParameter" variability="tunable" start="A30B">
+      <Dimension start="2"/>
+      <Dimension start="3"/>
+    </Binary>    
+  </ModelVariables>
+  <ModelStructure>
+    <Output valueReference="1"/>
+    <Output valueReference="2"/>
+    <Output valueReference="6"/>
+    <Output valueReference="7"/>
+    <Output valueReference="11"/>
+    <Output valueReference="12"/>
+    <Output valueReference="16"/>
+    <Output valueReference="17"/>
+    <Output valueReference="21"/>
+    <Output valueReference="22"/>
+    <Output valueReference="26"/>
+    <Output valueReference="27"/>
+    <Output valueReference="31"/>
+    <Output valueReference="32"/>
+    <Output valueReference="36"/>
+    <Output valueReference="37"/>
+    <Output valueReference="41"/>
+    <Output valueReference="42"/>
+    <Output valueReference="47"/>
+    <Output valueReference="48"/>
+    <Output valueReference="52"/>
+    <Output valueReference="53"/>
+    <Output valueReference="57"/>
+    <Output valueReference="58"/>
+    <Output valueReference="62"/>
+    <Output valueReference="63"/>
+    <Output valueReference="64"/>
+    <InitialUnknown valueReference="4" dependencies="2 3"/>
+    <InitialUnknown valueReference="9" dependencies="7 8"/>
+    <InitialUnknown valueReference="14" dependencies="12 13"/>
+    <InitialUnknown valueReference="19" dependencies="17 18"/>
+    <InitialUnknown valueReference="24" dependencies="22 23"/>
+    <InitialUnknown valueReference="29" dependencies="27 28"/>
+    <InitialUnknown valueReference="34" dependencies="32 33"/>
+    <InitialUnknown valueReference="39" dependencies="37 38"/>
+    <InitialUnknown valueReference="44" dependencies="42 43"/>
+    <InitialUnknown valueReference="51" dependencies="48 49"/>
+    <InitialUnknown valueReference="55" dependencies="53 54"/>
+    <InitialUnknown valueReference="60" dependencies="58 59"/>
+    <InitialUnknown valueReference="66" dependencies="64 65"/>
+  </ModelStructure>
+</fmiModelDescription>
