@@ -127,8 +127,6 @@ void normal_log(DynamicArrayTest component, const char* category, const char* fo
 
 fmi3Status doInit(DynamicArrayTest component)
 {
-    int i;
-
     DEBUGBREAK();
 
     /* Structural Parameters */
@@ -173,7 +171,7 @@ fmi3Status doCalc(DynamicArrayTest component, fmi3Float64 currentCommunicationPo
 
     for (i=0,size=component->x_dimension_size*component->y_dimension_size;i<size;i++)
         component->float64_output[i]=component->float64_input[i]*component->float64_parameter[i];
-        
+
     component->last_time=currentCommunicationPoint+communicationStepSize;
     *lastSuccessfulTime = component->last_time;
     *earlyReturn = fmi3False;
@@ -189,7 +187,6 @@ fmi3Status doTerm(DynamicArrayTest component)
 
 void doFree(DynamicArrayTest component)
 {
-    size_t i;
     DEBUGBREAK();
 
     free(component->float64_parameter);
