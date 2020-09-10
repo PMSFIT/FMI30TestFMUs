@@ -43,18 +43,89 @@
 #define DEBUGBREAK()
 #endif
 
-#include <stdio.h>
-
-
+/* Private File-based Logging just for Debugging */
 #ifdef PRIVATE_LOG_PATH
-FILE* SimpleVariableTest_private_log_file;
+static FILE* private_log_file = NULL;
 #endif
 
-#define FMI_BOOLEAN_XOR(a,b) ((a) ? (!(b)) : (b))
+void fmi_verbose_log_global(const char* format, ...)
+{
+#ifdef VERBOSE_FMI_LOGGING
+#ifdef PRIVATE_LOG_PATH
+    va_list ap;
+    va_start(ap, format);
+    if (private_log_file == NULL)
+        private_log_file = fopen(PRIVATE_LOG_PATH,"a");
+    if (private_log_file != NULL) {
+        fprintf(private_log_file,"SimpleVariableTest::Global: ");
+        vfprintf(private_log_file, format, ap);
+        fputc('\n',private_log_file);
+        fflush(private_log_file);
+    }
+#endif
+#endif
+}
+
+void internal_log(SimpleVariableTest component,const char* category, const char* format, va_list arg)
+{
+#if defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING)
+    char buffer[1024];
+#ifdef _WIN32
+    vsnprintf_s(buffer, 1024, _TRUNCATE, format, arg);
+#else
+    vsnprintf(buffer, 1024, format, arg);
+    buffer[1023]='\0';
+#endif
+#ifdef PRIVATE_LOG_PATH
+    if (private_log_file == NULL)
+        private_log_file = fopen(PRIVATE_LOG_PATH,"a");
+    if (private_log_file != NULL) {
+        fprintf(private_log_file,"SimpleVariableTest::%s<%p>: %s\n",component->instanceName,component,buffer);
+        fflush(private_log_file);
+    }
+#endif
+#ifdef PUBLIC_LOGGING
+    if (component->loggingOn) {
+        size_t i;
+        int active = component->nCategories == 0;
+        for (i=0;i<component->nCategories;i++) {
+            if (0==strcmp(category,component->loggingCategories[i])) {
+                active = 1;
+                break;
+            }
+        }
+        if (active)
+            component->functions.logMessage(component->functions.instanceEnvironment,component->instanceName,fmi3OK,category,buffer);
+    }
+#endif
+#endif
+}
+
+void fmi_verbose_log(SimpleVariableTest component,const char* format, ...)
+{
+#if defined(VERBOSE_FMI_LOGGING) && (defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING))
+    va_list ap;
+    va_start(ap, format);
+    internal_log(component,"FMI",format,ap);
+    va_end(ap);
+#endif
+}
+
+/* Normal Logging */
+void normal_log(SimpleVariableTest component, const char* category, const char* format, ...) {
+#if defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING)
+    va_list ap;
+    va_start(ap, format);
+    internal_log(component,category,format,ap);
+    va_end(ap);
+#endif
+}
 
 /*
  * Actual Core Content
  */
+
+#define FMI_BOOLEAN_XOR(a,b) ((a) ? (!(b)) : (b))
 
 fmi3Status doInit(SimpleVariableTest component)
 {
@@ -1186,14 +1257,89 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
  * Unsupported Features (FMUState, Derivatives, Status Enquiries)
  */
 
-FMI3_Export fmi3Status fmi3GetDoStepDiscardedStatus(fmi3Instance instance,
-                                                    fmi3Boolean* terminate,
-                                                    fmi3Float64* lastSuccessfulTime)
+FMI3_Export fmi3Status fmi3EnterConfigurationMode(fmi3Instance instance)
 {
     return fmi3Error;
 }
 
-FMI3_Export fmi3Status fmi3DoEarlyReturn(fmi3Instance instance, fmi3Float64 earlyReturnTime)
+FMI3_Export fmi3Status fmi3ExitConfigurationMode(fmi3Instance instance)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetClock(fmi3Instance instance,
+                                    const fmi3ValueReference valueReferences[],
+                                    size_t nValueReferences,
+                                    fmi3Clock values[],
+                                    size_t nValues)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3SetClock(fmi3Instance instance,
+                                    const fmi3ValueReference valueReferences[],
+                                    size_t nValueReferences,
+                                    const fmi3Clock values[],
+                                    const fmi3Boolean subactive[],
+                                    size_t nValues)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetIntervalDecimal(fmi3Instance instance,
+                                              const fmi3ValueReference valueReferences[],
+                                              size_t nValueReferences,
+                                              fmi3Float64 interval[],
+                                              size_t nValues)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetIntervalFraction(fmi3Instance instance,
+                                               const fmi3ValueReference valueReferences[],
+                                               size_t nValueReferences,
+                                               fmi3UInt64 intervalCounter[],
+                                               fmi3UInt64 resolution[],
+                                               size_t nValues)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3SetIntervalDecimal(fmi3Instance instance,
+                                              const fmi3ValueReference valueReferences[],
+                                              size_t nValueReferences,
+                                              const fmi3Float64 interval[],
+                                              size_t nValues)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3SetIntervalFraction(fmi3Instance instance,
+                                               const fmi3ValueReference valueReferences[],
+                                               size_t nValueReferences,
+                                               const fmi3UInt64 intervalCounter[],
+                                               const fmi3UInt64 resolution[],
+                                               size_t nValues)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3NewDiscreteStates(fmi3Instance instance,
+                                             fmi3Boolean *newDiscreteStatesNeeded,
+                                             fmi3Boolean *terminateSimulation,
+                                             fmi3Boolean *nominalsOfContinuousStatesChanged,
+                                             fmi3Boolean *valuesOfContinuousStatesChanged,
+                                             fmi3Boolean *nextEventTimeDefined,
+                                             fmi3Float64 *nextEventTime)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3EnterEventMode(fmi3Instance instance,
+                                          fmi3Boolean stepEvent,
+                                          const fmi3Int32 rootsFound[],
+                                          size_t nEventIndicators,
+                                          fmi3Boolean timeEvent)
 {
     return fmi3Error;
 }
@@ -1271,16 +1417,6 @@ FMI3_Export fmi3Status fmi3GetAdjointDerivative(fmi3Instance instance,
                                                 size_t nSeed,
                                                 fmi3Float64 sensitivity[],
                                                 size_t nSensitivity)
-{
-    return fmi3Error;
-}
-
-FMI3_Export fmi3Status fmi3SetInputDerivatives(fmi3Instance instance,
-                                               const fmi3ValueReference valueReferences[],
-                                               size_t nValueReferences,
-                                               const fmi3Int32 orders[],
-                                               const fmi3Float64 values[],
-                                               size_t nValues)
 {
     return fmi3Error;
 }

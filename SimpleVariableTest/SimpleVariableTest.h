@@ -14,6 +14,7 @@
 #endif
 
 #include <stdlib.h>
+#include <malloc.h>
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
@@ -222,81 +223,3 @@ typedef struct SimpleVariableTest {
     double last_time;
     fmi3Boolean init_mode;
 } *SimpleVariableTest;
-
-/* Private File-based Logging just for Debugging */
-#ifdef PRIVATE_LOG_PATH
-static FILE* private_log_file = NULL;
-#endif
-
-void fmi_verbose_log_global(const char* format, ...)
-{
-#ifdef VERBOSE_FMI_LOGGING
-#ifdef PRIVATE_LOG_PATH
-    va_list ap;
-    va_start(ap, format);
-    if (private_log_file == NULL)
-        private_log_file = fopen(PRIVATE_LOG_PATH,"a");
-    if (private_log_file != NULL) {
-        fprintf(private_log_file,"SimpleVariableTest::Global: ");
-        vfprintf(private_log_file, format, ap);
-        fputc('\n',private_log_file);
-        fflush(private_log_file);
-    }
-#endif
-#endif
-}
-
-void internal_log(SimpleVariableTest component,const char* category, const char* format, va_list arg)
-{
-#if defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING)
-    char buffer[1024];
-#ifdef _WIN32
-    vsnprintf_s(buffer, 1024, _TRUNCATE, format, arg);
-#else
-    vsnprintf(buffer, 1024, format, arg);
-    buffer[1023]='\0';
-#endif
-#ifdef PRIVATE_LOG_PATH
-    if (private_log_file == NULL)
-        private_log_file = fopen(PRIVATE_LOG_PATH,"a");
-    if (private_log_file != NULL) {
-        fprintf(private_log_file,"SimpleVariableTest::%s<%p>: %s\n",component->instanceName,component,buffer);
-        fflush(private_log_file);
-    }
-#endif
-#ifdef PUBLIC_LOGGING
-    if (component->loggingOn) {
-        size_t i;
-        int active = component->nCategories == 0;
-        for (i=0;i<component->nCategories;i++) {
-            if (0==strcmp(category,component->loggingCategories[i])) {
-                active = 1;
-                break;
-            }
-        }
-        if (active)
-            component->functions.logMessage(component->functions.instanceEnvironment,component->instanceName,fmi3OK,category,buffer);
-    }
-#endif
-#endif
-}
-
-void fmi_verbose_log(SimpleVariableTest component,const char* format, ...)
-{
-#if defined(VERBOSE_FMI_LOGGING) && (defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING))
-    va_list ap;
-    va_start(ap, format);
-    internal_log(component,"FMI",format,ap);
-    va_end(ap);
-#endif
-}
-
-/* Normal Logging */
-void normal_log(SimpleVariableTest component, const char* category, const char* format, ...) {
-#if defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING)
-    va_list ap;
-    va_start(ap, format);
-    internal_log(component,category,format,ap);
-    va_end(ap);
-#endif
-}
