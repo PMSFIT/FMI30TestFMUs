@@ -14,7 +14,6 @@
 #endif
 
 #include <stdlib.h>
-#include <malloc.h>
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>

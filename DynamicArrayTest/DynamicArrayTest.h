@@ -14,7 +14,6 @@
 #endif
 
 #include <stdlib.h>
-#include <malloc.h>
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
@@ -22,7 +21,7 @@
 #ifdef _MSC_VER
 #define myrecalloc _recalloc
 #else
-#define myrecalloc recalloc
+#define myrecalloc(ptr,num,size) realloc(ptr,num*size)
 #endif
 
 #if defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING)
