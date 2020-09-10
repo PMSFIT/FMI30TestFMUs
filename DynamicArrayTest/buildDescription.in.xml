@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiBuildDescription
+  fmiVersion="@FMU_FMI_VERSION@">
+  <BuildConfiguration modelIdentifier="@FMU_BCS_MODEL_IDENTIFIER@">
+    <SourceFileSet language="C99">
+      <SourceFile name="DynamicArrayTest.c"/>
+      <PreprocessorDefinition name="FMU_MODEL_IDENTIFIER" value="@FMU_BCS_MODEL_IDENTIFIER@"/>
+    </SourceFileSet>
+  </BuildConfiguration>
+</fmiBuildDescription>

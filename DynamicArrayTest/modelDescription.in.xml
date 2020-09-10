@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  fmiVersion="@FMU_FMI_VERSION@"
+  modelName="@FMU_MODEL_NAME@"
+  instantiationToken="@FMU_TOKEN@"
+  description="Test FMU for Dynamic Arrays"
+  author="@FMU_AUTHOR@"
+  version="@FMU_VERSION@"
+  generationTool="PMSF Manual FMU Framework"
+  generationDateAndTime="@FMU_TIMESTAMP@"
+  variableNamingConvention="structured">
+  <CoSimulation
+    modelIdentifier="@FMU_BCS_MODEL_IDENTIFIER@"
+    canHandleVariableCommunicationStepSize="true"
+    hasEventMode="false">
+  </CoSimulation>
+  <LogCategories>
+    <Category name="FMI" description="Enable logging of all FMI calls"/>
+    <Category name="BINARY" description="Enable Binary-related logging"/>
+  </LogCategories>
+  <DefaultExperiment startTime="0.0" stepSize="0.020"/>
+  <ModelVariables>
+    <Float64 name="Time" valueReference="0" causality="independent" variability="continuous"/>
+    <UInt64 name="XSize" valueReference="1" causality="structuralParameter" variability="tunable" start="4"/>
+    <UInt64 name="YSize" valueReference="2" causality="structuralParameter" variability="tunable" start="3"/>
+    <Float64 name="Float64Parameter" valueReference="3" causality="parameter" variability="tunable" start="0 1 2 3 4 5 6 7 8 9 10 11">
+      <Dimension valueReference="1"/>
+      <Dimension valueReference="2"/>
+    </Float64>
+    <Float64 name="Float64Input" valueReference="4" causality="input" variability="discrete" start="1">
+      <Dimension valueReference="1"/>
+      <Dimension valueReference="2"/>
+    </Float64>
+    <Float64 name="Float64Output" valueReference="5" causality="output" variability="discrete" initial="exact" start="4">
+      <Dimension valueReference="1"/>
+      <Dimension valueReference="2"/>
+    </Float64>
+  </ModelVariables>
+  <ModelStructure>
+    <Output valueReference="5"/>
+  </ModelStructure>
+</fmiModelDescription>
