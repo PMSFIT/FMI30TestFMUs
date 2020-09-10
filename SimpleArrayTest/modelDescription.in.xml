@@ -3,7 +3,7 @@
   fmiVersion="@FMU_FMI_VERSION@"
   modelName="@FMU_MODEL_NAME@"
   instantiationToken="@FMU_TOKEN@"
-  description="Simple Test FMU for Scalar Variable Types"
+  description="Simple Test FMU for Array Variable Types"
   author="@FMU_AUTHOR@"
   version="@FMU_VERSION@"
   generationTool="PMSF Manual FMU Framework"
