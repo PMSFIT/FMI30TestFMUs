@@ -162,7 +162,7 @@ fmi3Status doExitInitializationMode(DynamicArrayTest component)
     return fmi3OK;
 }
 
-fmi3Status doCalc(DynamicArrayTest component, fmi3Float64 currentCommunicationPoint, fmi3Float64 communicationStepSize, fmi3Boolean noSetFMUStatePriorToCurrentPoint, fmi3Boolean* terminate, fmi3Boolean* earlyReturn, fmi3Float64* lastSuccessfulTime)
+fmi3Status doCalc(DynamicArrayTest component, fmi3Float64 currentCommunicationPoint, fmi3Float64 communicationStepSize, fmi3Boolean noSetFMUStatePriorToCurrentPoint, fmi3Boolean* eventEncountered, fmi3Boolean* clocksAboutToTick, fmi3Boolean* terminate, fmi3Boolean* earlyReturn, fmi3Float64* lastSuccessfulTime)
 {
     size_t i,size;
     DEBUGBREAK();
@@ -174,6 +174,8 @@ fmi3Status doCalc(DynamicArrayTest component, fmi3Float64 currentCommunicationPo
 
     component->last_time=currentCommunicationPoint+communicationStepSize;
     *lastSuccessfulTime = component->last_time;
+    *eventEncountered = fmi3False;
+    *clocksAboutToTick = fmi3False;
     *earlyReturn = fmi3False;
     *terminate = fmi3False;
     return fmi3OK;
@@ -352,16 +354,18 @@ FMI3_Export fmi3Status fmi3ExitConfigurationMode(fmi3Instance instance)
 }
 
 FMI3_Export fmi3Status fmi3DoStep(fmi3Instance instance,
-    fmi3Float64 currentCommunicationPoint,
-    fmi3Float64 communicationStepSize,
-    fmi3Boolean noSetFMUStatePriorToCurrentPoint,
-    fmi3Boolean* terminate,
-    fmi3Boolean* earlyReturn,
-    fmi3Float64* lastSuccessfulTime)
+                                  fmi3Float64 currentCommunicationPoint,
+                                  fmi3Float64 communicationStepSize,
+                                  fmi3Boolean noSetFMUStatePriorToCurrentPoint,
+                                  fmi3Boolean* eventEncountered,
+                                  fmi3Boolean* clocksAboutToTick,
+                                  fmi3Boolean* terminate,
+                                  fmi3Boolean* earlyReturn,
+                                  fmi3Float64* lastSuccessfulTime)
 {
     DynamicArrayTest myc = (DynamicArrayTest)instance;
-    fmi_verbose_log(myc,"fmi3DoStep(%g,%g,%d,%p)", currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, earlyReturn);
-    return doCalc(myc,currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, terminate, earlyReturn, lastSuccessfulTime);
+    fmi_verbose_log(myc,"fmi3DoStep(%g,%g,%d,%p,%p,%p,%p,%p)", currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, eventEncountered, clocksAboutToTick, terminate, earlyReturn, lastSuccessfulTime);
+    return doCalc(myc,currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, eventEncountered, clocksAboutToTick, terminate, earlyReturn, lastSuccessfulTime);
 }
 
 FMI3_Export fmi3Status fmi3Terminate(fmi3Instance instance)
