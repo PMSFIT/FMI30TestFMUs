@@ -162,7 +162,7 @@ fmi3Status doExitInitializationMode(DynamicArrayTest component)
     return fmi3OK;
 }
 
-fmi3Status doCalc(DynamicArrayTest component, fmi3Float64 currentCommunicationPoint, fmi3Float64 communicationStepSize, fmi3Boolean noSetFMUStatePriorToCurrentPoint, fmi3Boolean* eventEncountered, fmi3Boolean* clocksAboutToTick, fmi3Boolean* terminate, fmi3Boolean* earlyReturn, fmi3Float64* lastSuccessfulTime)
+fmi3Status doCalc(DynamicArrayTest component, fmi3Float64 currentCommunicationPoint, fmi3Float64 communicationStepSize, fmi3Boolean noSetFMUStatePriorToCurrentPoint, fmi3Boolean* eventEncountered, fmi3Boolean* terminateSimulation, fmi3Boolean* earlyReturn, fmi3Float64* lastSuccessfulTime)
 {
     size_t i,size;
     DEBUGBREAK();
@@ -175,9 +175,8 @@ fmi3Status doCalc(DynamicArrayTest component, fmi3Float64 currentCommunicationPo
     component->last_time=currentCommunicationPoint+communicationStepSize;
     *lastSuccessfulTime = component->last_time;
     *eventEncountered = fmi3False;
-    *clocksAboutToTick = fmi3False;
     *earlyReturn = fmi3False;
-    *terminate = fmi3False;
+    *terminateSimulation = fmi3False;
     return fmi3OK;
 }
 
@@ -244,7 +243,8 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     fmi3String                     resourceLocation,
     fmi3Boolean                    visible,
     fmi3Boolean                    loggingOn,
-    fmi3Boolean                    eventModeRequired,
+    fmi3Boolean                    eventModeUsed,
+    fmi3Boolean                    earlyReturnAllowed,
     const fmi3ValueReference       requiredIntermediateVariables[],
     size_t                         nRequiredIntermediateVariables,
     fmi3InstanceEnvironment        instanceEnvironment,
@@ -255,10 +255,10 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
 
 #ifdef FMU_TOKEN
     if (instantiationToken!=NULL && 0!=strcmp(instantiationToken,FMU_TOKEN)) {
-        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = NULL (GUID mismatch, expected %s)",
+        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = NULL (GUID mismatch, expected %s)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn, eventModeRequired,
+            visible, loggingOn, eventModeUsed, earlyReturnAllowed,
             FMU_TOKEN);
         return NULL;
     }
@@ -267,10 +267,10 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     myc = calloc(1,sizeof(struct DynamicArrayTest));
 
     if (myc == NULL) {
-        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = NULL (alloc failure)",
+        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = NULL (alloc failure)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn, eventModeRequired);
+            visible, loggingOn, eventModeUsed, earlyReturnAllowed);
         return NULL;
     }
 
@@ -279,7 +279,8 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     myc->resourceLocation=strdup(resourceLocation);
     myc->visible=visible;
     myc->loggingOn=loggingOn;
-    myc->eventModeRequired=eventModeRequired;
+    myc->eventModeUsed=eventModeUsed;
+    myc->earlyReturnAllowed=earlyReturnAllowed;
     myc->functions.logMessage=logMessage;
     myc->functions.intermediateUpdate=intermediateUpdate;
     myc->functions.instanceEnvironment=instanceEnvironment;
@@ -294,10 +295,10 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     }
 
     if (doInit(myc) != fmi3OK) {
-        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = NULL (doInit failure)",
+        fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = NULL (doInit failure)",
             instanceName, instantiationToken,
             (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-            visible, loggingOn, eventModeRequired);
+            visible, loggingOn, eventModeUsed, earlyReturnAllowed);
         free(myc->resourceLocation);
         free(myc->instantiationToken);
         free(myc->instanceName);
@@ -306,10 +307,10 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
         free(myc);
         return NULL;
     }
-    fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,...) = %p",
+    fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = %p",
         instanceName, instantiationToken,
         (resourceLocation != NULL) ? resourceLocation : "<NULL>",
-        visible, loggingOn, eventModeRequired,
+        visible, loggingOn, eventModeUsed, earlyReturnAllowed,
         myc);
 
     return (fmi3Instance)myc;
@@ -358,14 +359,13 @@ FMI3_Export fmi3Status fmi3DoStep(fmi3Instance instance,
                                   fmi3Float64 communicationStepSize,
                                   fmi3Boolean noSetFMUStatePriorToCurrentPoint,
                                   fmi3Boolean* eventEncountered,
-                                  fmi3Boolean* clocksAboutToTick,
-                                  fmi3Boolean* terminate,
+                                  fmi3Boolean* terminateSimulation,
                                   fmi3Boolean* earlyReturn,
                                   fmi3Float64* lastSuccessfulTime)
 {
     DynamicArrayTest myc = (DynamicArrayTest)instance;
-    fmi_verbose_log(myc,"fmi3DoStep(%g,%g,%d,%p,%p,%p,%p,%p)", currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, eventEncountered, clocksAboutToTick, terminate, earlyReturn, lastSuccessfulTime);
-    return doCalc(myc,currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, eventEncountered, clocksAboutToTick, terminate, earlyReturn, lastSuccessfulTime);
+    fmi_verbose_log(myc,"fmi3DoStep(%g,%g,%d,%p,%p,%p,%p)", currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, eventEncountered, terminateSimulation, earlyReturn, lastSuccessfulTime);
+    return doCalc(myc,currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint, eventEncountered, terminateSimulation, earlyReturn, lastSuccessfulTime);
 }
 
 FMI3_Export fmi3Status fmi3Terminate(fmi3Instance instance)
@@ -869,7 +869,6 @@ FMI3_Export fmi3Status fmi3SetClock(fmi3Instance instance,
                                     const fmi3ValueReference valueReferences[],
                                     size_t nValueReferences,
                                     const fmi3Clock values[],
-                                    const fmi3Boolean subactive[],
                                     size_t nValues)
 {
     return fmi3Error;
@@ -878,8 +877,9 @@ FMI3_Export fmi3Status fmi3SetClock(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3GetIntervalDecimal(fmi3Instance instance,
                                               const fmi3ValueReference valueReferences[],
                                               size_t nValueReferences,
-                                              fmi3Float64 interval[],
-                                              size_t nValues)
+                                              fmi3Float64 intervals[],
+                                              fmi3IntervalQualifier qualifiers[],
+                                              size_t nIntervals)
 {
     return fmi3Error;
 }
@@ -887,9 +887,29 @@ FMI3_Export fmi3Status fmi3GetIntervalDecimal(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3GetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
-                                               fmi3UInt64 intervalCounter[],
-                                               fmi3UInt64 resolution[],
-                                               size_t nValues)
+                                               fmi3UInt64 intervalCounters[],
+                                               fmi3UInt64 resolutions[],
+                                               fmi3IntervalQualifier qualifiers[],
+                                               size_t nIntervals)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetShiftDecimal(fmi3Instance instance,
+                                           const fmi3ValueReference valueReferences[],
+                                           size_t nValueReferences,
+                                           fmi3Float64 shifts[],
+                                           size_t nShifts)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetShiftFraction(fmi3Instance instance,
+                                            const fmi3ValueReference valueReferences[],
+                                            size_t nValueReferences,
+                                            fmi3UInt64 shiftCounters[],
+                                            fmi3UInt64 resolutions[],
+                                            size_t nShifts)
 {
     return fmi3Error;
 }
@@ -897,8 +917,8 @@ FMI3_Export fmi3Status fmi3GetIntervalFraction(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3SetIntervalDecimal(fmi3Instance instance,
                                               const fmi3ValueReference valueReferences[],
                                               size_t nValueReferences,
-                                              const fmi3Float64 interval[],
-                                              size_t nValues)
+                                              const fmi3Float64 intervals[],
+                                              size_t nIntervals)
 {
     return fmi3Error;
 }
@@ -906,26 +926,27 @@ FMI3_Export fmi3Status fmi3SetIntervalDecimal(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3SetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
-                                               const fmi3UInt64 intervalCounter[],
-                                               const fmi3UInt64 resolution[],
-                                               size_t nValues)
+                                               const fmi3UInt64 intervalCounters[],
+                                               const fmi3UInt64 resolutions[],
+                                               size_t nIntervals)
 {
     return fmi3Error;
 }
 
-FMI3_Export fmi3Status fmi3NewDiscreteStates(fmi3Instance instance,
-                                             fmi3Boolean *newDiscreteStatesNeeded,
-                                             fmi3Boolean *terminateSimulation,
-                                             fmi3Boolean *nominalsOfContinuousStatesChanged,
-                                             fmi3Boolean *valuesOfContinuousStatesChanged,
-                                             fmi3Boolean *nextEventTimeDefined,
-                                             fmi3Float64 *nextEventTime)
+FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
+                                                fmi3Boolean* discreteStatesNeedUpdate,
+                                                fmi3Boolean* terminateSimulation,
+                                                fmi3Boolean* nominalsOfContinuousStatesChanged,
+                                                fmi3Boolean* valuesOfContinuousStatesChanged,
+                                                fmi3Boolean* nextEventTimeDefined,
+                                                fmi3Float64* nextEventTime)
 {
     return fmi3Error;
 }
 
 FMI3_Export fmi3Status fmi3EnterEventMode(fmi3Instance instance,
                                           fmi3Boolean stepEvent,
+                                          fmi3Boolean stateEvent,
                                           const fmi3Int32 rootsFound[],
                                           size_t nEventIndicators,
                                           fmi3Boolean timeEvent)

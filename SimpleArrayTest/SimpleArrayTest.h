@@ -201,7 +201,8 @@ typedef struct SimpleArrayTest {
     my3String resourceLocation;
     fmi3Boolean visible;
     fmi3Boolean loggingOn;
-    fmi3Boolean eventModeRequired;
+    fmi3Boolean eventModeUsed;
+    fmi3Boolean earlyReturnAllowed;
     size_t nCategories;
     char** loggingCategories;
     fmi3CallbackFunctionsVar functions;
