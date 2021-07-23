@@ -1299,6 +1299,16 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
  * Unsupported Features (FMUState, Derivatives, Status Enquiries)
  */
 
+FMI3_Export fmi3Status fmi3EnterConfigurationMode(fmi3Instance instance)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3ExitConfigurationMode(fmi3Instance instance)
+{
+    return fmi3Error;
+}
+
 FMI3_Export fmi3Status fmi3GetClock(fmi3Instance instance,
                                     const fmi3ValueReference valueReferences[],
                                     size_t nValueReferences,
@@ -1485,6 +1495,112 @@ FMI3_Export fmi3Status fmi3GetOutputDerivatives(fmi3Instance instance,
                                                 const fmi3Int32 orders[],
                                                 fmi3Float64 values[],
                                                 size_t nValues)
+{
+    return fmi3Error;
+}
+
+/*
+ * Unsupported Interfaces (Model Exchange, Scheduled Execution)
+ */
+
+FMI3_Export fmi3Instance fmi3InstantiateModelExchange(
+    fmi3String                 instanceName,
+    fmi3String                 instantiationToken,
+    fmi3String                 resourcePath,
+    fmi3Boolean                visible,
+    fmi3Boolean                loggingOn,
+    fmi3InstanceEnvironment    instanceEnvironment,
+    fmi3CallbackLogMessage     logMessage)
+{
+    return NULL;
+}
+
+FMI3_Export fmi3Instance fmi3InstantiateScheduledExecution(
+    fmi3String                     instanceName,
+    fmi3String                     instantiationToken,
+    fmi3String                     resourcePath,
+    fmi3Boolean                    visible,
+    fmi3Boolean                    loggingOn,
+    const fmi3ValueReference       requiredIntermediateVariables[],
+    size_t                         nRequiredIntermediateVariables,
+    fmi3InstanceEnvironment        instanceEnvironment,
+    fmi3CallbackLogMessage         logMessage,
+    fmi3CallbackIntermediateUpdate intermediateUpdate,
+    fmi3CallbackLockPreemption     lockPreemption,
+    fmi3CallbackUnlockPreemption   unlockPreemption)
+{
+    return NULL;
+}
+
+FMI3_Export fmi3Status fmi3EnterContinuousTimeMode(fmi3Instance instance)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3CompletedIntegratorStep(fmi3Instance instance,
+                                                   fmi3Boolean  noSetFMUStatePriorToCurrentPoint,
+                                                   fmi3Boolean* enterEventMode,
+                                                   fmi3Boolean* terminateSimulation)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3SetTime(fmi3Instance instance, fmi3Float64 time)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3SetContinuousStates(fmi3Instance instance,
+                                               const fmi3Float64 continuousStates[],
+                                               size_t nContinuousStates)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetContinuousStateDerivatives(fmi3Instance instance,
+                                                         fmi3Float64 derivatives[],
+                                                         size_t nContinuousStates)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetEventIndicators(fmi3Instance instance,
+                                              fmi3Float64 eventIndicators[],
+                                              size_t nEventIndicators)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetContinuousStates(fmi3Instance instance,
+                                               fmi3Float64 continuousStates[],
+                                               size_t nContinuousStates)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetNominalsOfContinuousStates(fmi3Instance instance,
+                                                         fmi3Float64 nominals[],
+                                                         size_t nContinuousStates)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetNumberOfEventIndicators(fmi3Instance instance,
+                                                      size_t* nEventIndicators)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3GetNumberOfContinuousStates(fmi3Instance instance,
+                                                       size_t* nContinuousStates)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3ActivateModelPartition(fmi3Instance instance,
+                                                  fmi3ValueReference clockReference,
+                                                  size_t clockElementIndex,
+                                                  fmi3Float64 activationTime)
 {
     return fmi3Error;
 }
