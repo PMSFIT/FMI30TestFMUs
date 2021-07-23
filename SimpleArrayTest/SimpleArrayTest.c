@@ -704,7 +704,7 @@ FMI3_Export fmi3Status fmi3SetDebugLogging(fmi3Instance instance, fmi3Boolean lo
 FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     fmi3String                     instanceName,
     fmi3String                     instantiationToken,
-    fmi3String                     resourceLocation,
+    fmi3String                     resourcePath,
     fmi3Boolean                    visible,
     fmi3Boolean                    loggingOn,
     fmi3Boolean                    eventModeUsed,
@@ -721,7 +721,7 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     if (instantiationToken!=NULL && 0!=strcmp(instantiationToken,FMU_TOKEN)) {
         fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = NULL (GUID mismatch, expected %s)",
             instanceName, instantiationToken,
-            (resourceLocation != NULL) ? resourceLocation : "<NULL>",
+            (resourcePath != NULL) ? resourcePath : "<NULL>",
             visible, loggingOn, eventModeUsed, earlyReturnAllowed,
             FMU_TOKEN);
         return NULL;
@@ -733,14 +733,14 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     if (myc == NULL) {
         fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = NULL (alloc failure)",
             instanceName, instantiationToken,
-            (resourceLocation != NULL) ? resourceLocation : "<NULL>",
+            (resourcePath != NULL) ? resourcePath : "<NULL>",
             visible, loggingOn, eventModeUsed, earlyReturnAllowed);
         return NULL;
     }
 
     myc->instanceName=strdup(instanceName);
     myc->instantiationToken=strdup(instantiationToken);
-    myc->resourceLocation=strdup(resourceLocation);
+    myc->resourcePath=strdup(resourcePath);
     myc->visible=visible;
     myc->loggingOn=loggingOn;
     myc->eventModeUsed=eventModeUsed;
@@ -761,9 +761,9 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     if (doInit(myc) != fmi3OK) {
         fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = NULL (doInit failure)",
             instanceName, instantiationToken,
-            (resourceLocation != NULL) ? resourceLocation : "<NULL>",
+            (resourcePath != NULL) ? resourcePath : "<NULL>",
             visible, loggingOn, eventModeUsed, earlyReturnAllowed);
-        free(myc->resourceLocation);
+        free(myc->resourcePath);
         free(myc->instantiationToken);
         free(myc->instanceName);
         for (;myc->loggingCategories!=NULL && myc->nCategories>0;) free(myc->loggingCategories[--(myc->nCategories)]);
@@ -773,7 +773,7 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
     }
     fmi_verbose_log_global("fmi3InstantiateCoSimulation(\"%s\",\"%s\",\"%s\",%d,%d,%d,%d,...) = %p",
         instanceName, instantiationToken,
-        (resourceLocation != NULL) ? resourceLocation : "<NULL>",
+        (resourcePath != NULL) ? resourcePath : "<NULL>",
         visible, loggingOn, eventModeUsed, earlyReturnAllowed,
         myc);
 
@@ -834,7 +834,7 @@ FMI3_Export void fmi3FreeInstance(fmi3Instance instance)
     fmi_verbose_log(myc,"fmi3FreeInstance()");
     doFree(myc);
 
-    free(myc->resourceLocation);
+    free(myc->resourcePath);
     free(myc->instantiationToken);
     free(myc->instanceName);
     for (;myc->loggingCategories!=NULL && myc->nCategories>0;) free(myc->loggingCategories[--(myc->nCategories)]);
@@ -1372,6 +1372,11 @@ FMI3_Export fmi3Status fmi3SetIntervalFraction(fmi3Instance instance,
                                                const fmi3UInt64 intervalCounters[],
                                                const fmi3UInt64 resolutions[],
                                                size_t nIntervals)
+{
+    return fmi3Error;
+}
+
+FMI3_Export fmi3Status fmi3EvaluateDiscreteStates(fmi3Instance instance)
 {
     return fmi3Error;
 }

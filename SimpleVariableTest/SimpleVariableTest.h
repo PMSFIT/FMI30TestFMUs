@@ -198,7 +198,7 @@ typedef struct SimpleVariableTest {
     /* Members */
     my3String instanceName;
     my3String instantiationToken;
-    my3String resourceLocation;
+    my3String resourcePath;
     fmi3Boolean visible;
     fmi3Boolean loggingOn;
     fmi3Boolean eventModeUsed;
