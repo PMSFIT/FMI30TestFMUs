@@ -36,7 +36,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Boolean>
-    <Boolean name="BooleanCalculatedParameter" valueReference="4" causality="calculatedParameter" variability="tunable" start="false">
+    <Boolean name="BooleanCalculatedParameter" valueReference="4" causality="calculatedParameter" variability="tunable" initial="approx" start="false">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Boolean>
@@ -56,7 +56,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt64>
-    <UInt64 name="UInt64CalculatedParameter" valueReference="9" causality="calculatedParameter" variability="tunable" start="20">
+    <UInt64 name="UInt64CalculatedParameter" valueReference="9" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt64>
@@ -76,7 +76,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int64>
-    <Int64 name="Int64CalculatedParameter" valueReference="14" causality="calculatedParameter" variability="tunable" start="20">
+    <Int64 name="Int64CalculatedParameter" valueReference="14" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int64>
@@ -96,7 +96,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt32>
-    <UInt32 name="UInt32CalculatedParameter" valueReference="19" causality="calculatedParameter" variability="tunable" start="20">
+    <UInt32 name="UInt32CalculatedParameter" valueReference="19" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt32>
@@ -116,7 +116,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int32>
-    <Int32 name="Int32CalculatedParameter" valueReference="24" causality="calculatedParameter" variability="tunable" start="20">
+    <Int32 name="Int32CalculatedParameter" valueReference="24" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int32>
@@ -136,7 +136,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt16>
-    <UInt16 name="UInt16CalculatedParameter" valueReference="29" causality="calculatedParameter" variability="tunable" start="20">
+    <UInt16 name="UInt16CalculatedParameter" valueReference="29" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt16>
@@ -156,7 +156,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int16>
-    <Int16 name="Int16CalculatedParameter" valueReference="34" causality="calculatedParameter" variability="tunable" start="20">
+    <Int16 name="Int16CalculatedParameter" valueReference="34" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int16>
@@ -176,7 +176,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt8>
-    <UInt8 name="UInt8CalculatedParameter" valueReference="39" causality="calculatedParameter" variability="tunable" start="20">
+    <UInt8 name="UInt8CalculatedParameter" valueReference="39" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </UInt8>
@@ -196,7 +196,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int8>
-    <Int8 name="Int8CalculatedParameter" valueReference="44" causality="calculatedParameter" variability="tunable" start="20">
+    <Int8 name="Int8CalculatedParameter" valueReference="44" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Int8>
@@ -217,7 +217,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Float64>
-    <Float64 name="Float64CalculatedParameter" valueReference="50" causality="calculatedParameter" variability="tunable" start="20">
+    <Float64 name="Float64CalculatedParameter" valueReference="50" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Float64>
@@ -237,7 +237,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Float32>
-    <Float32 name="Float32CalculatedParameter" valueReference="55" causality="calculatedParameter" variability="tunable" start="20">
+    <Float32 name="Float32CalculatedParameter" valueReference="55" causality="calculatedParameter" variability="tunable" initial="approx" start="20">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Float32>
@@ -261,7 +261,7 @@
       <Dimension start="3"/>
       <Start value="efgh"/>
     </String>
-    <String name="StringCalculatedParameter" valueReference="60" causality="calculatedParameter" variability="tunable">
+    <String name="StringCalculatedParameter" valueReference="60" causality="calculatedParameter" variability="tunable" initial="approx">
       <Dimension start="2"/>
       <Dimension start="3"/>
       <Start value="efghijkl"/>
@@ -286,7 +286,7 @@
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Binary>
-    <Binary name="BinaryCalculatedParameter" valueReference="66" causality="calculatedParameter" variability="tunable" start="A30B">
+    <Binary name="BinaryCalculatedParameter" valueReference="66" causality="calculatedParameter" variability="tunable" initial="approx" start="A30B">
       <Dimension start="2"/>
       <Dimension start="3"/>
     </Binary>    
@@ -328,7 +328,7 @@
     <InitialUnknown valueReference="34" dependencies="32 33"/>
     <InitialUnknown valueReference="39" dependencies="37 38"/>
     <InitialUnknown valueReference="44" dependencies="42 43"/>
-    <InitialUnknown valueReference="51" dependencies="48 49"/>
+    <InitialUnknown valueReference="50" dependencies="48 49"/>
     <InitialUnknown valueReference="55" dependencies="53 54"/>
     <InitialUnknown valueReference="60" dependencies="58 59"/>
     <InitialUnknown valueReference="66" dependencies="64 65"/>
