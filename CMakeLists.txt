@@ -25,7 +25,7 @@ else()
 endif()
 set(VERBOSE_FMI_LOGGING OFF CACHE BOOL "Enable detailed FMI function logging")
 
-set(FMU_FMI_VERSION "3.0-beta.1" CACHE STRING "FMI Standard Version Number")
+set(FMU_FMI_VERSION "3.0-beta.2" CACHE STRING "FMI Standard Version Number")
 set(FMU_VERSION "1.0" CACHE STRING "FMU Version Number (informative only)")
 set(FMU_AUTHOR "PMSF" CACHE STRING "FMU Author Information")
 
