@@ -52,8 +52,8 @@ typedef fmi3Char* my3String;
 /* Callbacks without const */
 typedef struct {
     fmi3InstanceEnvironment        instanceEnvironment;
-    fmi3CallbackLogMessage         logMessage;
-    fmi3CallbackIntermediateUpdate intermediateUpdate;
+    fmi3LogMessageCallback         logMessage;
+    fmi3IntermediateUpdateCallback intermediateUpdate;
 } fmi3CallbackFunctionsVar;
 
 #define FMI_FLOAT64_TIME_VR         0
