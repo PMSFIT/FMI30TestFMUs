@@ -17,11 +17,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
-
-#if defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING)
 #include <stdio.h>
-#endif
-
 
 #ifndef FMU_SHARED_OBJECT
 #define FMI3_FUNCTION_PREFIX FMU_MODEL_IDENTIFIER ## _

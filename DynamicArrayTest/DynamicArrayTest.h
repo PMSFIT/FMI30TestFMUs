@@ -17,15 +17,12 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#include <stdio.h>
 
 #ifdef _MSC_VER
 #define myrecalloc _recalloc
 #else
 #define myrecalloc(ptr,num,size) realloc(ptr,num*size)
-#endif
-
-#if defined(PRIVATE_LOG_PATH) || defined(PUBLIC_LOGGING)
-#include <stdio.h>
 #endif
 
 #ifndef FMU_SHARED_OBJECT

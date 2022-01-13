@@ -121,6 +121,32 @@ void normal_log(DynamicArrayTest component, const char* category, const char* fo
 #endif
 }
 
+/* Mandatory Error Logging */
+void error_log(DynamicArrayTest component, const char* format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    char buffer[1024];
+#ifdef _WIN32
+    vsnprintf_s(buffer, 1024, _TRUNCATE, format, ap);
+#else
+    vsnprintf(buffer, 1024, format, ap);
+    buffer[1023]='\0';
+#endif
+    if (component->loggingOn && component->functions.logMessage) {
+        size_t i;
+        int active = component->nCategories == 0;
+        for (i=0;i<component->nCategories;i++) {
+            if (0==strcmp("FMI",component->loggingCategories[i])) {
+                active = 1;
+                break;
+            }
+        }
+        if (active)
+            component->functions.logMessage(component->functions.instanceEnvironment,fmi3Error,"FMI",buffer);
+    }
+    va_end(ap);
+}
+
 /*
  * Actual Core Content
  */
@@ -427,6 +453,7 @@ FMI3_Export fmi3Status fmi3GetFloat64(fmi3Instance instance, const fmi3ValueRefe
                     values[j++]=myc->float64_output[k];
                 break;
             default:
+                error_log(instance,"Invalid value reference %zu for type FLOAT64: Must be 0, 3, 4, or 5.",valueReferences[i]);
                 return fmi3Error;
         }
     }
@@ -441,6 +468,7 @@ FMI3_Export fmi3Status fmi3GetFloat32(fmi3Instance instance, const fmi3ValueRefe
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -461,6 +489,7 @@ FMI3_Export fmi3Status fmi3GetUInt64(fmi3Instance instance, const fmi3ValueRefer
                 values[j++]=myc->y_dimension_size;
                 break;
             default:
+                error_log(instance,"Invalid value reference %zu for type UINT64: Must be 1 or 2.",valueReferences[i]);
                 return fmi3Error;
         }
     }
@@ -475,6 +504,7 @@ FMI3_Export fmi3Status fmi3GetInt64(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -489,6 +519,7 @@ FMI3_Export fmi3Status fmi3GetUInt32(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -503,6 +534,7 @@ FMI3_Export fmi3Status fmi3GetInt32(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -517,6 +549,7 @@ FMI3_Export fmi3Status fmi3GetUInt16(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -531,6 +564,7 @@ FMI3_Export fmi3Status fmi3GetInt16(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -545,6 +579,7 @@ FMI3_Export fmi3Status fmi3GetUInt8(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -559,6 +594,7 @@ FMI3_Export fmi3Status fmi3GetInt8(fmi3Instance instance, const fmi3ValueReferen
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -573,6 +609,7 @@ FMI3_Export fmi3Status fmi3GetBoolean(fmi3Instance instance, const fmi3ValueRefe
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -587,6 +624,7 @@ FMI3_Export fmi3Status fmi3GetString(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -601,6 +639,7 @@ FMI3_Export fmi3Status fmi3GetBinary(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -616,6 +655,7 @@ FMI3_Export fmi3Status fmi3SetFloat64(fmi3Instance instance, const fmi3ValueRefe
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             case FMI_FLOAT64_TIME_VR:
+                error_log(instance,"Cannot set independent variable directly.");
                 return fmi3Error;
             case FMI_FLOAT64_PARAMETER_VR:
                 size=myc->x_dimension_size*myc->y_dimension_size;
@@ -628,8 +668,10 @@ FMI3_Export fmi3Status fmi3SetFloat64(fmi3Instance instance, const fmi3ValueRefe
                     myc->float64_input[k]=values[j++];
                 break;
             case FMI_FLOAT64_OUTPUT_VR:
+                error_log(instance,"Cannot set output variable.");
                 return fmi3Error;
             default:
+                error_log(instance,"Invalid value reference %zu for type FLOAT64: Must be 0, 3, 4, or 5.",valueReferences[i]);
                 return fmi3Error;
         }
     }
@@ -647,6 +689,7 @@ FMI3_Export fmi3Status fmi3SetFloat32(fmi3Instance instance, const fmi3ValueRefe
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -664,16 +707,21 @@ FMI3_Export fmi3Status fmi3SetUInt64(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             case FMI_UINT64_X_SIZE_VR:
-                if (!myc->reconfiguration_mode)
+                if (!myc->reconfiguration_mode) {
+                    error_log(instance,"Cannot set structural parameter outside (re-)configuration mode.");
                     return fmi3Error;
+                }
                 myc->x_dimension_size=values[j++];
                 break;
             case FMI_UINT64_Y_SIZE_VR:
-                if (!myc->reconfiguration_mode)
+                if (!myc->reconfiguration_mode) {
+                    error_log(instance,"Cannot set structural parameter outside (re-)configuration mode.");
                     return fmi3Error;
+                }
                 myc->y_dimension_size=values[j++];
                 break;
             default:
+                error_log(instance,"Invalid value reference %zu for type UINT64: Must be 1 or 2.",valueReferences[i]);
                 return fmi3Error;
         }
     }
@@ -691,6 +739,7 @@ FMI3_Export fmi3Status fmi3SetInt64(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -708,6 +757,7 @@ FMI3_Export fmi3Status fmi3SetUInt32(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -725,6 +775,7 @@ FMI3_Export fmi3Status fmi3SetInt32(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -742,6 +793,7 @@ FMI3_Export fmi3Status fmi3SetUInt16(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -759,6 +811,7 @@ FMI3_Export fmi3Status fmi3SetInt16(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -776,6 +829,7 @@ FMI3_Export fmi3Status fmi3SetUInt8(fmi3Instance instance, const fmi3ValueRefere
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -793,6 +847,7 @@ FMI3_Export fmi3Status fmi3SetInt8(fmi3Instance instance, const fmi3ValueReferen
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -810,6 +865,7 @@ FMI3_Export fmi3Status fmi3SetBoolean(fmi3Instance instance, const fmi3ValueRefe
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -827,6 +883,7 @@ FMI3_Export fmi3Status fmi3SetString(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -844,6 +901,7 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0,j = 0; i<nValueReferences; i++) {
         switch (valueReferences[i]) {
             default:
+                error_log(instance,"Invalid accessor called, no variable of this type.");
                 return fmi3Error;
         }
     }
@@ -856,79 +914,54 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
  * Unsupported Features (FMUState, Derivatives, Status Enquiries)
  */
 
+#define unsupported(x) { error_log(instance,"Unsupported function %s called!",#x); return fmi3Error; }
+
 FMI3_Export fmi3Status fmi3GetClock(fmi3Instance instance,
                                     const fmi3ValueReference valueReferences[],
                                     size_t nValueReferences,
-                                    fmi3Clock values[])
-{
-    return fmi3Error;
-}
+                                    fmi3Clock values[]) unsupported(fmi3GetClock)
 
 FMI3_Export fmi3Status fmi3SetClock(fmi3Instance instance,
                                     const fmi3ValueReference valueReferences[],
                                     size_t nValueReferences,
-                                    const fmi3Clock values[])
-{
-    return fmi3Error;
-}
+                                    const fmi3Clock values[]) unsupported(fmi3SetClock)
 
 FMI3_Export fmi3Status fmi3GetIntervalDecimal(fmi3Instance instance,
                                               const fmi3ValueReference valueReferences[],
                                               size_t nValueReferences,
                                               fmi3Float64 intervals[],
-                                              fmi3IntervalQualifier qualifiers[])
-{
-    return fmi3Error;
-}
+                                              fmi3IntervalQualifier qualifiers[]) unsupported(fmi3GetIntervalDecimal)
 
 FMI3_Export fmi3Status fmi3GetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
                                                fmi3UInt64 intervalCounters[],
                                                fmi3UInt64 resolutions[],
-                                               fmi3IntervalQualifier qualifiers[])
-{
-    return fmi3Error;
-}
+                                               fmi3IntervalQualifier qualifiers[]) unsupported(fmi3GetIntervalFraction)
 
 FMI3_Export fmi3Status fmi3GetShiftDecimal(fmi3Instance instance,
                                            const fmi3ValueReference valueReferences[],
                                            size_t nValueReferences,
-                                           fmi3Float64 shifts[])
-{
-    return fmi3Error;
-}
+                                           fmi3Float64 shifts[]) unsupported(fmi3GetShiftDecimal)
 
 FMI3_Export fmi3Status fmi3GetShiftFraction(fmi3Instance instance,
                                             const fmi3ValueReference valueReferences[],
                                             size_t nValueReferences,
                                             fmi3UInt64 shiftCounters[],
-                                            fmi3UInt64 resolutions[])
-{
-    return fmi3Error;
-}
+                                            fmi3UInt64 resolutions[]) unsupported(fmi3GetShiftFraction)
 
 FMI3_Export fmi3Status fmi3SetIntervalDecimal(fmi3Instance instance,
                                               const fmi3ValueReference valueReferences[],
                                               size_t nValueReferences,
-                                              const fmi3Float64 intervals[])
-{
-    return fmi3Error;
-}
+                                              const fmi3Float64 intervals[]) unsupported(fmi3SetIntervalDecimal)
 
 FMI3_Export fmi3Status fmi3SetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
                                                const fmi3UInt64 intervalCounters[],
-                                               const fmi3UInt64 resolutions[])
-{
-    return fmi3Error;
-}
+                                               const fmi3UInt64 resolutions[]) unsupported(fmi3SetIntervalFraction)
 
-FMI3_Export fmi3Status fmi3EvaluateDiscreteStates(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3EvaluateDiscreteStates(fmi3Instance instance) unsupported(fmi3EvaluateDiscreteStates)
 
 FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
                                                 fmi3Boolean* discreteStatesNeedUpdate,
@@ -936,30 +969,18 @@ FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
                                                 fmi3Boolean* nominalsOfContinuousStatesChanged,
                                                 fmi3Boolean* valuesOfContinuousStatesChanged,
                                                 fmi3Boolean* nextEventTimeDefined,
-                                                fmi3Float64* nextEventTime)
-{
-    return fmi3Error;
-}
+                                                fmi3Float64* nextEventTime) unsupported(fmi3UpdateDiscreteStates)
 
 FMI3_Export fmi3Status fmi3EnterEventMode(fmi3Instance instance,
                                           fmi3Boolean stepEvent,
                                           fmi3Boolean stateEvent,
                                           const fmi3Int32 rootsFound[],
                                           size_t nEventIndicators,
-                                          fmi3Boolean timeEvent)
-{
-    return fmi3Error;
-}
+                                          fmi3Boolean timeEvent) unsupported(fmi3EnterEventMode)
 
-FMI3_Export fmi3Status fmi3EnterStepMode(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3EnterStepMode(fmi3Instance instance) unsupported(fmi3EnterStepMode)
 
-FMI3_Export fmi3Status fmi3GetNumberOfVariableDependencies(fmi3Instance instance, fmi3ValueReference valueReference, size_t* nDependencies)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3GetNumberOfVariableDependencies(fmi3Instance instance, fmi3ValueReference valueReference, size_t* nDependencies) unsupported(fmi3GetNumberOfVariableDependencies)
 
 FMI3_Export fmi3Status fmi3GetVariableDependencies(fmi3Instance instance,
                                                    fmi3ValueReference dependent,
@@ -967,40 +988,19 @@ FMI3_Export fmi3Status fmi3GetVariableDependencies(fmi3Instance instance,
                                                    fmi3ValueReference independents[],
                                                    size_t elementIndicesOfIndependents[],
                                                    fmi3DependencyKind dependencyKinds[],
-                                                   size_t nDependencies)
-{
-    return fmi3Error;
-}
+                                                   size_t nDependencies) unsupported(fmi3GetVariableDependencies)
 
-FMI3_Export fmi3Status fmi3GetFMUState(fmi3Instance instance, fmi3FMUState* FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3GetFMUState(fmi3Instance instance, fmi3FMUState* FMUState) unsupported(fmi3GetFMUState)
 
-FMI3_Export fmi3Status fmi3SetFMUState(fmi3Instance instance, fmi3FMUState FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SetFMUState(fmi3Instance instance, fmi3FMUState FMUState) unsupported(fmi3SetFMUState)
 
-FMI3_Export fmi3Status fmi3FreeFMUState(fmi3Instance instance, fmi3FMUState* FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3FreeFMUState(fmi3Instance instance, fmi3FMUState* FMUState) unsupported(fmi3FreeFMUState)
 
-FMI3_Export fmi3Status fmi3SerializedFMUStateSize(fmi3Instance instance, fmi3FMUState FMUState, size_t *size)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SerializedFMUStateSize(fmi3Instance instance, fmi3FMUState FMUState, size_t *size) unsupported(fmi3SerializedFMUStateSize)
 
-FMI3_Export fmi3Status fmi3SerializeFMUState (fmi3Instance instance, fmi3FMUState FMUState, fmi3Byte serializedState[], size_t size)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SerializeFMUState(fmi3Instance instance, fmi3FMUState FMUState, fmi3Byte serializedState[], size_t size) unsupported(fmi3SerializeFMUState)
 
-FMI3_Export fmi3Status fmi3DeSerializeFMUState (fmi3Instance instance, const fmi3Byte serializedState[], size_t size, fmi3FMUState* FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3DeSerializeFMUState(fmi3Instance instance, const fmi3Byte serializedState[], size_t size, fmi3FMUState* FMUState) unsupported(fmi3DeSerializeFMUState)
 
 FMI3_Export fmi3Status fmi3GetDirectionalDerivative(fmi3Instance instance,
                                                     const fmi3ValueReference unknowns[],
@@ -1010,10 +1010,7 @@ FMI3_Export fmi3Status fmi3GetDirectionalDerivative(fmi3Instance instance,
                                                     const fmi3Float64 seed[],
                                                     size_t nSeed,
                                                     fmi3Float64 sensitivity[],
-                                                    size_t nSensitivity)
-{
-    return fmi3Error;
-}
+                                                    size_t nSensitivity) unsupported(fmi3GetDirectionalDerivative)
 
 FMI3_Export fmi3Status fmi3GetAdjointDerivative(fmi3Instance instance,
                                                 const fmi3ValueReference unknowns[],
@@ -1023,20 +1020,14 @@ FMI3_Export fmi3Status fmi3GetAdjointDerivative(fmi3Instance instance,
                                                 const fmi3Float64 seed[],
                                                 size_t nSeed,
                                                 fmi3Float64 sensitivity[],
-                                                size_t nSensitivity)
-{
-    return fmi3Error;
-}
+                                                size_t nSensitivity) unsupported(fmi3GetAdjointDerivative)
 
 FMI3_Export fmi3Status fmi3GetOutputDerivatives(fmi3Instance instance,
                                                 const fmi3ValueReference valueReferences[],
                                                 size_t nValueReferences,
                                                 const fmi3Int32 orders[],
                                                 fmi3Float64 values[],
-                                                size_t nValues)
-{
-    return fmi3Error;
-}
+                                                size_t nValues) unsupported(fmi3GetOutputDerivatives)
 
 /*
  * Unsupported Interfaces (Model Exchange, Scheduled Execution)
@@ -1051,6 +1042,8 @@ FMI3_Export fmi3Instance fmi3InstantiateModelExchange(
     fmi3InstanceEnvironment    instanceEnvironment,
     fmi3LogMessageCallback     logMessage)
 {
+    if (loggingOn && logMessage)
+        logMessage(instanceEnvironment,fmi3Error,"FMI","Unsupported function fmi3InstantateModelExchange called!");
     return NULL;
 }
 
@@ -1066,77 +1059,46 @@ FMI3_Export fmi3Instance fmi3InstantiateScheduledExecution(
     fmi3LockPreemptionCallback     lockPreemption,
     fmi3UnlockPreemptionCallback   unlockPreemption)
 {
+    if (loggingOn && logMessage)
+        logMessage(instanceEnvironment,fmi3Error,"FMI","Unsupported function fmi3InstantateScheduledExecution called!");
     return NULL;
 }
 
-FMI3_Export fmi3Status fmi3EnterContinuousTimeMode(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3EnterContinuousTimeMode(fmi3Instance instance) unsupported(fmi3EnterContinuousTimeMode)
 
 FMI3_Export fmi3Status fmi3CompletedIntegratorStep(fmi3Instance instance,
                                                    fmi3Boolean  noSetFMUStatePriorToCurrentPoint,
                                                    fmi3Boolean* enterEventMode,
-                                                   fmi3Boolean* terminateSimulation)
-{
-    return fmi3Error;
-}
+                                                   fmi3Boolean* terminateSimulation) unsupported(fmi3CompletedIntegratorStep)
 
-FMI3_Export fmi3Status fmi3SetTime(fmi3Instance instance, fmi3Float64 time)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SetTime(fmi3Instance instance, fmi3Float64 time) unsupported(fmi3SetTime)
 
 FMI3_Export fmi3Status fmi3SetContinuousStates(fmi3Instance instance,
                                                const fmi3Float64 continuousStates[],
-                                               size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                               size_t nContinuousStates) unsupported(fmi3SetContinuousStates)
 
 FMI3_Export fmi3Status fmi3GetContinuousStateDerivatives(fmi3Instance instance,
                                                          fmi3Float64 derivatives[],
-                                                         size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                                         size_t nContinuousStates) unsupported(fmi3GetContinuousStateDerivatives)
 
 FMI3_Export fmi3Status fmi3GetEventIndicators(fmi3Instance instance,
                                               fmi3Float64 eventIndicators[],
-                                              size_t nEventIndicators)
-{
-    return fmi3Error;
-}
+                                              size_t nEventIndicators) unsupported(fmi3GetEventIndicators)
 
 FMI3_Export fmi3Status fmi3GetContinuousStates(fmi3Instance instance,
                                                fmi3Float64 continuousStates[],
-                                               size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                               size_t nContinuousStates) unsupported(fmi3GetContinuousStates)
 
 FMI3_Export fmi3Status fmi3GetNominalsOfContinuousStates(fmi3Instance instance,
                                                          fmi3Float64 nominals[],
-                                                         size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                                         size_t nContinuousStates) unsupported(fmi3GetNominalsOfContinuousStates)
 
 FMI3_Export fmi3Status fmi3GetNumberOfEventIndicators(fmi3Instance instance,
-                                                      size_t* nEventIndicators)
-{
-    return fmi3Error;
-}
+                                                      size_t* nEventIndicators) unsupported(fmi3GetNumberOfEventIndicators)
 
 FMI3_Export fmi3Status fmi3GetNumberOfContinuousStates(fmi3Instance instance,
-                                                       size_t* nContinuousStates)
-{
-    return fmi3Error;
-}
+                                                       size_t* nContinuousStates) unsupported(fmi3GetNumberOfContinuousStates)
 
 FMI3_Export fmi3Status fmi3ActivateModelPartition(fmi3Instance instance,
                                                   fmi3ValueReference clockReference,
-                                                  fmi3Float64 activationTime)
-{
-    return fmi3Error;
-}
+                                                  fmi3Float64 activationTime) unsupported(fmi3ActivateModelPartition)

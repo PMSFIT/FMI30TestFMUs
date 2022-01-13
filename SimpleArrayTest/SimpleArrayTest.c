@@ -121,6 +121,32 @@ void normal_log(SimpleArrayTest component, const char* category, const char* for
 #endif
 }
 
+/* Mandatory Error Logging */
+void error_log(SimpleArrayTest component, const char* format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    char buffer[1024];
+#ifdef _WIN32
+    vsnprintf_s(buffer, 1024, _TRUNCATE, format, ap);
+#else
+    vsnprintf(buffer, 1024, format, ap);
+    buffer[1023]='\0';
+#endif
+    if (component->loggingOn && component->functions.logMessage) {
+        size_t i;
+        int active = component->nCategories == 0;
+        for (i=0;i<component->nCategories;i++) {
+            if (0==strcmp("FMI",component->loggingCategories[i])) {
+                active = 1;
+                break;
+            }
+        }
+        if (active)
+            component->functions.logMessage(component->functions.instanceEnvironment,fmi3Error,"FMI",buffer);
+    }
+    va_end(ap);
+}
+
 /*
  * Actual Core Content
  */
@@ -846,20 +872,39 @@ FMI3_Export void fmi3FreeInstance(fmi3Instance instance)
  * Data Exchange Functions
  */
 
+#define check_array_sizes() \
+    do { \
+        size_t count, iter; \
+        for (iter=0,count=0;iter<nValueReferences;iter++) \
+            count += (valueReferences[iter] == FMI_FLOAT64_TIME_IDX) ? 1:6; \
+        if (nValues != count) { \
+            error_log(instance,"nValues %zu is not equal to expected value %zu for array variable acccess!",nValues,count); \
+            return fmi3Error; \
+        } \
+    } while(0)
+
+#define checked_vr_idx(idx,i,type) \
+    fmi3ValueReference idx; \
+    do { \
+        idx = valueReferences[i] - FMI_##type##_BASE_VR; \
+        if (valueReferences[i]<FMI_##type##_BASE_VR || idx>=FMI_##type##_VARS) { \
+            error_log(instance,"Invalid value reference %zu for type %s: Must be between %zu and %zu.",valueReferences[i],#type,FMI_##type##_BASE_VR,FMI_##type##_BASE_VR + FMI_##type##_VARS - 1); \
+            return fmi3Error; \
+        } \
+    } while(0)
+
 FMI3_Export fmi3Status fmi3GetFloat64(fmi3Instance instance, const fmi3ValueReference valueReferences[], size_t nValueReferences, fmi3Float64 values[], size_t nValues)
 {
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetFloat64(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_FLOAT64_BASE_VR;
-        if (idx<FMI_FLOAT64_VARS) {
-            if (idx==FMI_FLOAT64_TIME_IDX)
-                values[j++]=myc->float64_vars[idx][0][0];
-            else
-                CopyOut(values,j,myc->float64_vars[idx]);
-        } else
-            return fmi3Error;
+        checked_vr_idx(idx,i,FLOAT64);
+        if (idx==FMI_FLOAT64_TIME_IDX)
+            values[j++]=myc->float64_vars[idx][0][0];
+        else
+            CopyOut(values,j,myc->float64_vars[idx]);
     }
     return fmi3OK;
 }
@@ -869,12 +914,10 @@ FMI3_Export fmi3Status fmi3GetFloat32(fmi3Instance instance, const fmi3ValueRefe
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetFloat32(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_FLOAT32_BASE_VR;
-        if (idx<FMI_FLOAT32_VARS)
-            CopyOut(values,j,myc->float32_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,FLOAT32);
+        CopyOut(values,j,myc->float32_vars[idx]);
     }
     return fmi3OK;
 }
@@ -884,12 +927,10 @@ FMI3_Export fmi3Status fmi3GetUInt64(fmi3Instance instance, const fmi3ValueRefer
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetUInt64(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT64_BASE_VR;
-        if (idx<FMI_UINT64_VARS)
-            CopyOut(values,j,myc->uint64_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT64);
+        CopyOut(values,j,myc->uint64_vars[idx]);
     }
     return fmi3OK;
 }
@@ -899,12 +940,10 @@ FMI3_Export fmi3Status fmi3GetInt64(fmi3Instance instance, const fmi3ValueRefere
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetInt64(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT64_BASE_VR;
-        if (idx<FMI_INT64_VARS)
-            CopyOut(values,j,myc->int64_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT64);
+        CopyOut(values,j,myc->int64_vars[idx]);
     }
     return fmi3OK;
 }
@@ -914,12 +953,10 @@ FMI3_Export fmi3Status fmi3GetUInt32(fmi3Instance instance, const fmi3ValueRefer
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetUInt32(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT32_BASE_VR;
-        if (idx<FMI_UINT32_VARS)
-            CopyOut(values,j,myc->uint32_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT32);
+        CopyOut(values,j,myc->uint32_vars[idx]);
     }
     return fmi3OK;
 }
@@ -929,12 +966,10 @@ FMI3_Export fmi3Status fmi3GetInt32(fmi3Instance instance, const fmi3ValueRefere
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetInt32(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT32_BASE_VR;
-        if (idx<FMI_INT32_VARS)
-            CopyOut(values,j,myc->int32_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT32);
+        CopyOut(values,j,myc->int32_vars[idx]);
     }
     return fmi3OK;
 }
@@ -944,12 +979,10 @@ FMI3_Export fmi3Status fmi3GetUInt16(fmi3Instance instance, const fmi3ValueRefer
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetUInt16(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT16_BASE_VR;
-        if (idx<FMI_UINT16_VARS)
-            CopyOut(values,j,myc->uint16_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT16);
+        CopyOut(values,j,myc->uint16_vars[idx]);
     }
     return fmi3OK;
 }
@@ -959,12 +992,10 @@ FMI3_Export fmi3Status fmi3GetInt16(fmi3Instance instance, const fmi3ValueRefere
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetInt16(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT16_BASE_VR;
-        if (idx<FMI_INT16_VARS)
-            CopyOut(values,j,myc->int16_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT16);
+        CopyOut(values,j,myc->int16_vars[idx]);
     }
     return fmi3OK;
 }
@@ -974,12 +1005,10 @@ FMI3_Export fmi3Status fmi3GetUInt8(fmi3Instance instance, const fmi3ValueRefere
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetUInt8(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT8_BASE_VR;
-        if (idx<FMI_UINT8_VARS)
-            CopyOut(values,j,myc->uint8_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT8);
+        CopyOut(values,j,myc->uint8_vars[idx]);
     }
     return fmi3OK;
 }
@@ -989,12 +1018,10 @@ FMI3_Export fmi3Status fmi3GetInt8(fmi3Instance instance, const fmi3ValueReferen
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetInt8(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT8_BASE_VR;
-        if (idx<FMI_INT8_VARS)
-            CopyOut(values,j,myc->int8_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT8);
+        CopyOut(values,j,myc->int8_vars[idx]);
     }
     return fmi3OK;
 }
@@ -1004,12 +1031,10 @@ FMI3_Export fmi3Status fmi3GetBoolean(fmi3Instance instance, const fmi3ValueRefe
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetBoolean(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_BOOLEAN_BASE_VR;
-        if (idx<FMI_BOOLEAN_VARS)
-            CopyOut(values,j,myc->boolean_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,BOOLEAN);
+        CopyOut(values,j,myc->boolean_vars[idx]);
     }
     return fmi3OK;
 }
@@ -1019,12 +1044,10 @@ FMI3_Export fmi3Status fmi3GetString(fmi3Instance instance, const fmi3ValueRefer
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetString(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_STRING_BASE_VR;
-        if (idx<FMI_STRING_VARS)
-            CopyOut(values,j,myc->string_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,STRING);
+        CopyOut(values,j,myc->string_vars[idx]);
     }
     return fmi3OK;
 }
@@ -1034,14 +1057,12 @@ FMI3_Export fmi3Status fmi3GetBinary(fmi3Instance instance, const fmi3ValueRefer
     SimpleArrayTest myc = (SimpleArrayTest)instance;
     size_t i,j;
     fmi_verbose_log(myc,"fmi3GetBinary(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_BINARY_BASE_VR;
-        if (idx<FMI_BINARY_VARS) {
-            size_t j_init = j;
-            CopyOut(valueSizes,j,myc->binary_sizes[idx]);
-            CopyOut(values,j_init,myc->binary_vars[idx]);
-        } else
-            return fmi3Error;
+        size_t j_init = j;
+        checked_vr_idx(idx,i,BINARY);
+        CopyOut(valueSizes,j,myc->binary_sizes[idx]);
+        CopyOut(values,j_init,myc->binary_vars[idx]);
     }
     return fmi3OK;
 }
@@ -1052,12 +1073,10 @@ FMI3_Export fmi3Status fmi3SetFloat64(fmi3Instance instance, const fmi3ValueRefe
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetFloat64(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_FLOAT64_BASE_VR;
-        if (idx<FMI_FLOAT64_VARS && idx!=FMI_FLOAT64_TIME_IDX)
-            CopyIn(values,j,myc->float64_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,FLOAT64);
+        CopyIn(values,j,myc->float64_vars[idx]);
         tuned |= (idx == FMI_FLOAT64_FLOAT64PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1071,12 +1090,10 @@ FMI3_Export fmi3Status fmi3SetFloat32(fmi3Instance instance, const fmi3ValueRefe
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetFloat32(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_FLOAT32_BASE_VR;
-        if (idx<FMI_FLOAT32_VARS)
-            CopyIn(values,j,myc->float32_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,FLOAT32);
+        CopyIn(values,j,myc->float32_vars[idx]);
         tuned |= (idx == FMI_FLOAT32_FLOAT32PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1090,12 +1107,10 @@ FMI3_Export fmi3Status fmi3SetUInt64(fmi3Instance instance, const fmi3ValueRefer
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt64(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT64_BASE_VR;
-        if (idx<FMI_UINT64_VARS)
-            CopyIn(values,j,myc->uint64_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT64);
+        CopyIn(values,j,myc->uint64_vars[idx]);
         tuned |= (idx == FMI_UINT64_UINT64PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1109,12 +1124,10 @@ FMI3_Export fmi3Status fmi3SetInt64(fmi3Instance instance, const fmi3ValueRefere
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt64(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT64_BASE_VR;
-        if (idx<FMI_INT64_VARS)
-            CopyIn(values,j,myc->int64_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT64);
+        CopyIn(values,j,myc->int64_vars[idx]);
         tuned |= (idx == FMI_INT64_INT64PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1128,12 +1141,10 @@ FMI3_Export fmi3Status fmi3SetUInt32(fmi3Instance instance, const fmi3ValueRefer
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt32(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT32_BASE_VR;
-        if (idx<FMI_UINT32_VARS)
-            CopyIn(values,j,myc->uint32_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT32);
+        CopyIn(values,j,myc->uint32_vars[idx]);
         tuned |= (idx == FMI_UINT32_UINT32PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1147,12 +1158,10 @@ FMI3_Export fmi3Status fmi3SetInt32(fmi3Instance instance, const fmi3ValueRefere
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt32(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT32_BASE_VR;
-        if (idx<FMI_INT32_VARS)
-            CopyIn(values,j,myc->int32_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT32);
+        CopyIn(values,j,myc->int32_vars[idx]);
         tuned |= (idx == FMI_INT32_INT32PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1166,12 +1175,10 @@ FMI3_Export fmi3Status fmi3SetUInt16(fmi3Instance instance, const fmi3ValueRefer
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt16(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT16_BASE_VR;
-        if (idx<FMI_UINT16_VARS)
-            CopyIn(values,j,myc->uint16_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT16);
+        CopyIn(values,j,myc->uint16_vars[idx]);
         tuned |= (idx == FMI_UINT16_UINT16PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1185,12 +1192,10 @@ FMI3_Export fmi3Status fmi3SetInt16(fmi3Instance instance, const fmi3ValueRefere
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt16(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT16_BASE_VR;
-        if (idx<FMI_INT16_VARS)
-            CopyIn(values,j,myc->int16_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT16);
+        CopyIn(values,j,myc->int16_vars[idx]);
         tuned |= (idx == FMI_INT16_INT16PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1204,12 +1209,10 @@ FMI3_Export fmi3Status fmi3SetUInt8(fmi3Instance instance, const fmi3ValueRefere
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetUInt8(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_UINT8_BASE_VR;
-        if (idx<FMI_UINT8_VARS)
-            CopyIn(values,j,myc->uint8_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,UINT8);
+        CopyIn(values,j,myc->uint8_vars[idx]);
         tuned |= (idx == FMI_UINT8_UINT8PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1223,12 +1226,10 @@ FMI3_Export fmi3Status fmi3SetInt8(fmi3Instance instance, const fmi3ValueReferen
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetInt8(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_INT8_BASE_VR;
-        if (idx<FMI_INT8_VARS)
-            CopyIn(values,j,myc->int8_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,INT8);
+        CopyIn(values,j,myc->int8_vars[idx]);
         tuned |= (idx == FMI_INT8_INT8PARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1242,12 +1243,10 @@ FMI3_Export fmi3Status fmi3SetBoolean(fmi3Instance instance, const fmi3ValueRefe
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetBoolean(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_BOOLEAN_BASE_VR;
-        if (idx<FMI_BOOLEAN_VARS)
-            CopyIn(values,j,myc->boolean_vars[idx]);
-        else
-            return fmi3Error;
+        checked_vr_idx(idx,i,BOOLEAN);
+        CopyIn(values,j,myc->boolean_vars[idx]);
         tuned |= (idx == FMI_BOOLEAN_BOOLEANPARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1261,13 +1260,11 @@ FMI3_Export fmi3Status fmi3SetString(fmi3Instance instance, const fmi3ValueRefer
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetString(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_STRING_BASE_VR;
-        if (idx<FMI_STRING_VARS) {
-            DoAll(myc->string_vars[idx],free);
-            CopyInStr(values,j,myc->string_vars[idx]);
-        } else
-            return fmi3Error;
+        checked_vr_idx(idx,i,STRING);
+        DoAll(myc->string_vars[idx],free);
+        CopyInStr(values,j,myc->string_vars[idx]);
         tuned |= (idx == FMI_STRING_STRINGPARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1281,13 +1278,11 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
     size_t i,j;
     int tuned = 0;
     fmi_verbose_log(myc,"fmi3SetBinary(...)");
+    check_array_sizes();
     for (i = 0,j = 0; i<nValueReferences; i++) {
-        fmi3ValueReference idx = valueReferences[i] - FMI_BINARY_BASE_VR;
-        if (idx<FMI_BINARY_VARS) {
-            DoAll(myc->binary_vars[idx],free);
-            CopyInBin(valueSizes,values,j,myc->binary_sizes[idx],myc->binary_vars[idx]);
-        } else
-            return fmi3Error;
+        checked_vr_idx(idx,i,BINARY);
+        DoAll(myc->binary_vars[idx],free);
+        CopyInBin(valueSizes,values,j,myc->binary_sizes[idx],myc->binary_vars[idx]);
         tuned |= (idx == FMI_BINARY_BINARYPARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1299,89 +1294,58 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
  * Unsupported Features (FMUState, Derivatives, Status Enquiries)
  */
 
-FMI3_Export fmi3Status fmi3EnterConfigurationMode(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+#define unsupported(x) { error_log(instance,"Unsupported function %s called!",#x); return fmi3Error; }
 
-FMI3_Export fmi3Status fmi3ExitConfigurationMode(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3EnterConfigurationMode(fmi3Instance instance) unsupported(fmi3EnterConfigurationMode)
+
+FMI3_Export fmi3Status fmi3ExitConfigurationMode(fmi3Instance instance) unsupported(fmi3ExitConfigurationMode)
 
 FMI3_Export fmi3Status fmi3GetClock(fmi3Instance instance,
                                     const fmi3ValueReference valueReferences[],
                                     size_t nValueReferences,
-                                    fmi3Clock values[])
-{
-    return fmi3Error;
-}
+                                    fmi3Clock values[]) unsupported(fmi3GetClock)
 
 FMI3_Export fmi3Status fmi3SetClock(fmi3Instance instance,
                                     const fmi3ValueReference valueReferences[],
                                     size_t nValueReferences,
-                                    const fmi3Clock values[])
-{
-    return fmi3Error;
-}
+                                    const fmi3Clock values[]) unsupported(fmi3SetClock)
 
 FMI3_Export fmi3Status fmi3GetIntervalDecimal(fmi3Instance instance,
                                               const fmi3ValueReference valueReferences[],
                                               size_t nValueReferences,
                                               fmi3Float64 intervals[],
-                                              fmi3IntervalQualifier qualifiers[])
-{
-    return fmi3Error;
-}
+                                              fmi3IntervalQualifier qualifiers[]) unsupported(fmi3GetIntervalDecimal)
 
 FMI3_Export fmi3Status fmi3GetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
                                                fmi3UInt64 intervalCounters[],
                                                fmi3UInt64 resolutions[],
-                                               fmi3IntervalQualifier qualifiers[])
-{
-    return fmi3Error;
-}
+                                               fmi3IntervalQualifier qualifiers[]) unsupported(fmi3GetIntervalFraction)
 
 FMI3_Export fmi3Status fmi3GetShiftDecimal(fmi3Instance instance,
                                            const fmi3ValueReference valueReferences[],
                                            size_t nValueReferences,
-                                           fmi3Float64 shifts[])
-{
-    return fmi3Error;
-}
+                                           fmi3Float64 shifts[]) unsupported(fmi3GetShiftDecimal)
 
 FMI3_Export fmi3Status fmi3GetShiftFraction(fmi3Instance instance,
                                             const fmi3ValueReference valueReferences[],
                                             size_t nValueReferences,
                                             fmi3UInt64 shiftCounters[],
-                                            fmi3UInt64 resolutions[])
-{
-    return fmi3Error;
-}
+                                            fmi3UInt64 resolutions[]) unsupported(fmi3GetShiftFraction)
 
 FMI3_Export fmi3Status fmi3SetIntervalDecimal(fmi3Instance instance,
                                               const fmi3ValueReference valueReferences[],
                                               size_t nValueReferences,
-                                              const fmi3Float64 intervals[])
-{
-    return fmi3Error;
-}
+                                              const fmi3Float64 intervals[]) unsupported(fmi3SetIntervalDecimal)
 
 FMI3_Export fmi3Status fmi3SetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
                                                const fmi3UInt64 intervalCounters[],
-                                               const fmi3UInt64 resolutions[])
-{
-    return fmi3Error;
-}
+                                               const fmi3UInt64 resolutions[]) unsupported(fmi3SetIntervalFraction)
 
-FMI3_Export fmi3Status fmi3EvaluateDiscreteStates(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3EvaluateDiscreteStates(fmi3Instance instance) unsupported(fmi3EvaluateDiscreteStates)
 
 FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
                                                 fmi3Boolean* discreteStatesNeedUpdate,
@@ -1389,30 +1353,18 @@ FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
                                                 fmi3Boolean* nominalsOfContinuousStatesChanged,
                                                 fmi3Boolean* valuesOfContinuousStatesChanged,
                                                 fmi3Boolean* nextEventTimeDefined,
-                                                fmi3Float64* nextEventTime)
-{
-    return fmi3Error;
-}
+                                                fmi3Float64* nextEventTime) unsupported(fmi3UpdateDiscreteStates)
 
 FMI3_Export fmi3Status fmi3EnterEventMode(fmi3Instance instance,
                                           fmi3Boolean stepEvent,
                                           fmi3Boolean stateEvent,
                                           const fmi3Int32 rootsFound[],
                                           size_t nEventIndicators,
-                                          fmi3Boolean timeEvent)
-{
-    return fmi3Error;
-}
+                                          fmi3Boolean timeEvent) unsupported(fmi3EnterEventMode)
 
-FMI3_Export fmi3Status fmi3EnterStepMode(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3EnterStepMode(fmi3Instance instance) unsupported(fmi3EnterStepMode)
 
-FMI3_Export fmi3Status fmi3GetNumberOfVariableDependencies(fmi3Instance instance, fmi3ValueReference valueReference, size_t* nDependencies)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3GetNumberOfVariableDependencies(fmi3Instance instance, fmi3ValueReference valueReference, size_t* nDependencies) unsupported(fmi3GetNumberOfVariableDependencies)
 
 FMI3_Export fmi3Status fmi3GetVariableDependencies(fmi3Instance instance,
                                                    fmi3ValueReference dependent,
@@ -1420,40 +1372,19 @@ FMI3_Export fmi3Status fmi3GetVariableDependencies(fmi3Instance instance,
                                                    fmi3ValueReference independents[],
                                                    size_t elementIndicesOfIndependents[],
                                                    fmi3DependencyKind dependencyKinds[],
-                                                   size_t nDependencies)
-{
-    return fmi3Error;
-}
+                                                   size_t nDependencies) unsupported(fmi3GetVariableDependencies)
 
-FMI3_Export fmi3Status fmi3GetFMUState(fmi3Instance instance, fmi3FMUState* FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3GetFMUState(fmi3Instance instance, fmi3FMUState* FMUState) unsupported(fmi3GetFMUState)
 
-FMI3_Export fmi3Status fmi3SetFMUState(fmi3Instance instance, fmi3FMUState FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SetFMUState(fmi3Instance instance, fmi3FMUState FMUState) unsupported(fmi3SetFMUState)
 
-FMI3_Export fmi3Status fmi3FreeFMUState(fmi3Instance instance, fmi3FMUState* FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3FreeFMUState(fmi3Instance instance, fmi3FMUState* FMUState) unsupported(fmi3FreeFMUState)
 
-FMI3_Export fmi3Status fmi3SerializedFMUStateSize(fmi3Instance instance, fmi3FMUState FMUState, size_t *size)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SerializedFMUStateSize(fmi3Instance instance, fmi3FMUState FMUState, size_t *size) unsupported(fmi3SerializedFMUStateSize)
 
-FMI3_Export fmi3Status fmi3SerializeFMUState (fmi3Instance instance, fmi3FMUState FMUState, fmi3Byte serializedState[], size_t size)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SerializeFMUState(fmi3Instance instance, fmi3FMUState FMUState, fmi3Byte serializedState[], size_t size) unsupported(fmi3SerializeFMUState)
 
-FMI3_Export fmi3Status fmi3DeSerializeFMUState (fmi3Instance instance, const fmi3Byte serializedState[], size_t size, fmi3FMUState* FMUState)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3DeSerializeFMUState(fmi3Instance instance, const fmi3Byte serializedState[], size_t size, fmi3FMUState* FMUState) unsupported(fmi3DeSerializeFMUState)
 
 FMI3_Export fmi3Status fmi3GetDirectionalDerivative(fmi3Instance instance,
                                                     const fmi3ValueReference unknowns[],
@@ -1463,10 +1394,7 @@ FMI3_Export fmi3Status fmi3GetDirectionalDerivative(fmi3Instance instance,
                                                     const fmi3Float64 seed[],
                                                     size_t nSeed,
                                                     fmi3Float64 sensitivity[],
-                                                    size_t nSensitivity)
-{
-    return fmi3Error;
-}
+                                                    size_t nSensitivity) unsupported(fmi3GetDirectionalDerivative)
 
 FMI3_Export fmi3Status fmi3GetAdjointDerivative(fmi3Instance instance,
                                                 const fmi3ValueReference unknowns[],
@@ -1476,20 +1404,14 @@ FMI3_Export fmi3Status fmi3GetAdjointDerivative(fmi3Instance instance,
                                                 const fmi3Float64 seed[],
                                                 size_t nSeed,
                                                 fmi3Float64 sensitivity[],
-                                                size_t nSensitivity)
-{
-    return fmi3Error;
-}
+                                                size_t nSensitivity) unsupported(fmi3GetAdjointDerivative)
 
 FMI3_Export fmi3Status fmi3GetOutputDerivatives(fmi3Instance instance,
                                                 const fmi3ValueReference valueReferences[],
                                                 size_t nValueReferences,
                                                 const fmi3Int32 orders[],
                                                 fmi3Float64 values[],
-                                                size_t nValues)
-{
-    return fmi3Error;
-}
+                                                size_t nValues) unsupported(fmi3GetOutputDerivatives)
 
 /*
  * Unsupported Interfaces (Model Exchange, Scheduled Execution)
@@ -1504,6 +1426,8 @@ FMI3_Export fmi3Instance fmi3InstantiateModelExchange(
     fmi3InstanceEnvironment    instanceEnvironment,
     fmi3LogMessageCallback     logMessage)
 {
+    if (loggingOn && logMessage)
+        logMessage(instanceEnvironment,fmi3Error,"FMI","Unsupported function fmi3InstantateModelExchange called!");
     return NULL;
 }
 
@@ -1519,77 +1443,46 @@ FMI3_Export fmi3Instance fmi3InstantiateScheduledExecution(
     fmi3LockPreemptionCallback     lockPreemption,
     fmi3UnlockPreemptionCallback   unlockPreemption)
 {
+    if (loggingOn && logMessage)
+        logMessage(instanceEnvironment,fmi3Error,"FMI","Unsupported function fmi3InstantateScheduledExecution called!");
     return NULL;
 }
 
-FMI3_Export fmi3Status fmi3EnterContinuousTimeMode(fmi3Instance instance)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3EnterContinuousTimeMode(fmi3Instance instance) unsupported(fmi3EnterContinuousTimeMode)
 
 FMI3_Export fmi3Status fmi3CompletedIntegratorStep(fmi3Instance instance,
                                                    fmi3Boolean  noSetFMUStatePriorToCurrentPoint,
                                                    fmi3Boolean* enterEventMode,
-                                                   fmi3Boolean* terminateSimulation)
-{
-    return fmi3Error;
-}
+                                                   fmi3Boolean* terminateSimulation) unsupported(fmi3CompletedIntegratorStep)
 
-FMI3_Export fmi3Status fmi3SetTime(fmi3Instance instance, fmi3Float64 time)
-{
-    return fmi3Error;
-}
+FMI3_Export fmi3Status fmi3SetTime(fmi3Instance instance, fmi3Float64 time) unsupported(fmi3SetTime)
 
 FMI3_Export fmi3Status fmi3SetContinuousStates(fmi3Instance instance,
                                                const fmi3Float64 continuousStates[],
-                                               size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                               size_t nContinuousStates) unsupported(fmi3SetContinuousStates)
 
 FMI3_Export fmi3Status fmi3GetContinuousStateDerivatives(fmi3Instance instance,
                                                          fmi3Float64 derivatives[],
-                                                         size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                                         size_t nContinuousStates) unsupported(fmi3GetContinuousStateDerivatives)
 
 FMI3_Export fmi3Status fmi3GetEventIndicators(fmi3Instance instance,
                                               fmi3Float64 eventIndicators[],
-                                              size_t nEventIndicators)
-{
-    return fmi3Error;
-}
+                                              size_t nEventIndicators) unsupported(fmi3GetEventIndicators)
 
 FMI3_Export fmi3Status fmi3GetContinuousStates(fmi3Instance instance,
                                                fmi3Float64 continuousStates[],
-                                               size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                               size_t nContinuousStates) unsupported(fmi3GetContinuousStates)
 
 FMI3_Export fmi3Status fmi3GetNominalsOfContinuousStates(fmi3Instance instance,
                                                          fmi3Float64 nominals[],
-                                                         size_t nContinuousStates)
-{
-    return fmi3Error;
-}
+                                                         size_t nContinuousStates) unsupported(fmi3GetNominalsOfContinuousStates)
 
 FMI3_Export fmi3Status fmi3GetNumberOfEventIndicators(fmi3Instance instance,
-                                                      size_t* nEventIndicators)
-{
-    return fmi3Error;
-}
+                                                      size_t* nEventIndicators) unsupported(fmi3GetNumberOfEventIndicators)
 
 FMI3_Export fmi3Status fmi3GetNumberOfContinuousStates(fmi3Instance instance,
-                                                       size_t* nContinuousStates)
-{
-    return fmi3Error;
-}
+                                                       size_t* nContinuousStates) unsupported(fmi3GetNumberOfContinuousStates)
 
 FMI3_Export fmi3Status fmi3ActivateModelPartition(fmi3Instance instance,
                                                   fmi3ValueReference clockReference,
-                                                  fmi3Float64 activationTime)
-{
-    return fmi3Error;
-}
+                                                  fmi3Float64 activationTime) unsupported(fmi3ActivateModelPartition)
