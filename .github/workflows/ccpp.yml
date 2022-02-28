@@ -34,7 +34,7 @@ jobs:
   build-win64:
     name: Build Windows 64
 
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     steps:
     - uses: actions/checkout@v2
