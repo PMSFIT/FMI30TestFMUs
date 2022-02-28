@@ -961,6 +961,17 @@ FMI3_Export fmi3Status fmi3SetIntervalFraction(fmi3Instance instance,
                                                const fmi3UInt64 intervalCounters[],
                                                const fmi3UInt64 resolutions[]) unsupported(fmi3SetIntervalFraction)
 
+FMI3_Export fmi3Status fmi3SetShiftDecimal(fmi3Instance instance,
+                                           const fmi3ValueReference valueReferences[],
+                                           size_t nValueReferences,
+                                           const fmi3Float64 shifts[]) unsupported(fmi3SetShiftDecimal)
+
+FMI3_Export fmi3Status fmi3SetShiftFraction(fmi3Instance instance,
+                                            const fmi3ValueReference valueReferences[],
+                                            size_t nValueReferences,
+                                            const fmi3UInt64 shiftCounters[],
+                                            const fmi3UInt64 resolutions[]) unsupported(fmi3SetShiftFraction)
+
 FMI3_Export fmi3Status fmi3EvaluateDiscreteStates(fmi3Instance instance) unsupported(fmi3EvaluateDiscreteStates)
 
 FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
@@ -972,11 +983,11 @@ FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
                                                 fmi3Float64* nextEventTime) unsupported(fmi3UpdateDiscreteStates)
 
 FMI3_Export fmi3Status fmi3EnterEventMode(fmi3Instance instance,
-                                          fmi3Boolean stepEvent,
-                                          fmi3Boolean stateEvent,
+                                          fmi3EventQualifier stepEvent,
+                                          fmi3EventQualifier stateEvent,
                                           const fmi3Int32 rootsFound[],
                                           size_t nEventIndicators,
-                                          fmi3Boolean timeEvent) unsupported(fmi3EnterEventMode)
+                                          fmi3EventQualifier timeEvent) unsupported(fmi3EnterEventMode)
 
 FMI3_Export fmi3Status fmi3EnterStepMode(fmi3Instance instance) unsupported(fmi3EnterStepMode)
 
