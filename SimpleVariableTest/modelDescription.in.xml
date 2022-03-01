@@ -91,12 +91,24 @@
     <String name="StringCalculatedParameter" valueReference="60" causality="calculatedParameter" variability="tunable" initial="approx">
       <Start value="efghijkl"/>
     </String>
-    <Binary name="BinaryInput" valueReference="61" causality="input" variability="discrete" start=""/>
-    <Binary name="BinaryOutput" valueReference="62" causality="output" variability="discrete" initial="exact" start=""/>
-    <Binary name="XOROutput" valueReference="63" causality="output" variability="discrete" initial="exact" start=""/>
-    <Binary name="BinaryConstant" valueReference="64" causality="output" variability="constant" initial="exact" start="BEEF"/>
-    <Binary name="BinaryParameter" valueReference="65" causality="parameter" variability="tunable" start="1DE4"/>
-    <Binary name="BinaryCalculatedParameter" valueReference="66" causality="calculatedParameter" variability="tunable" initial="approx" start="A30B"/>    
+    <Binary name="BinaryInput" valueReference="61" causality="input" variability="discrete">
+      <Start value=""/>
+    </Binary>
+    <Binary name="BinaryOutput" valueReference="62" causality="output" variability="discrete" initial="exact">
+      <Start value=""/>
+    </Binary>
+    <Binary name="XOROutput" valueReference="63" causality="output" variability="discrete" initial="exact">
+      <Start value=""/>
+    </Binary>
+    <Binary name="BinaryConstant" valueReference="64" causality="output" variability="constant" initial="exact">
+      <Start value="BEEF"/>
+    </Binary>
+    <Binary name="BinaryParameter" valueReference="65" causality="parameter" variability="tunable">
+      <Start value="1DE4"/>
+    </Binary>
+    <Binary name="BinaryCalculatedParameter" valueReference="66" causality="calculatedParameter" variability="tunable" initial="approx">
+      <Start value="A30B"/>
+    </Binary>
   </ModelVariables>
   <ModelStructure>
     <Output valueReference="1"/>
