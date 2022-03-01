@@ -876,7 +876,7 @@ FMI3_Export void fmi3FreeInstance(fmi3Instance instance)
     do { \
         size_t count, iter; \
         for (iter=0,count=0;iter<nValueReferences;iter++) \
-            count += (valueReferences[iter] == FMI_FLOAT64_TIME_IDX) ? 1:6; \
+            count += (valueReferences[iter] == FMI_FLOAT64_BASE_VR + FMI_FLOAT64_TIME_IDX) ? 1:6; \
         if (nValues != count) { \
             error_log(instance,"nValues %zu is not equal to expected value %zu for array variable acccess!",nValues,count); \
             return fmi3Error; \
