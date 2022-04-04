@@ -1227,7 +1227,7 @@ FMI3_Export fmi3Status fmi3GetIntervalDecimal(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3GetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
-                                               fmi3UInt64 intervalCounters[],
+                                               fmi3UInt64 counters[],
                                                fmi3UInt64 resolutions[],
                                                fmi3IntervalQualifier qualifiers[]) unsupported(fmi3GetIntervalFraction)
 
@@ -1239,7 +1239,7 @@ FMI3_Export fmi3Status fmi3GetShiftDecimal(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3GetShiftFraction(fmi3Instance instance,
                                             const fmi3ValueReference valueReferences[],
                                             size_t nValueReferences,
-                                            fmi3UInt64 shiftCounters[],
+                                            fmi3UInt64 counters[],
                                             fmi3UInt64 resolutions[]) unsupported(fmi3GetShiftFraction)
 
 FMI3_Export fmi3Status fmi3SetIntervalDecimal(fmi3Instance instance,
@@ -1250,7 +1250,7 @@ FMI3_Export fmi3Status fmi3SetIntervalDecimal(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3SetIntervalFraction(fmi3Instance instance,
                                                const fmi3ValueReference valueReferences[],
                                                size_t nValueReferences,
-                                               const fmi3UInt64 intervalCounters[],
+                                               const fmi3UInt64 counters[],
                                                const fmi3UInt64 resolutions[]) unsupported(fmi3SetIntervalFraction)
 
 FMI3_Export fmi3Status fmi3SetShiftDecimal(fmi3Instance instance,
@@ -1261,7 +1261,7 @@ FMI3_Export fmi3Status fmi3SetShiftDecimal(fmi3Instance instance,
 FMI3_Export fmi3Status fmi3SetShiftFraction(fmi3Instance instance,
                                             const fmi3ValueReference valueReferences[],
                                             size_t nValueReferences,
-                                            const fmi3UInt64 shiftCounters[],
+                                            const fmi3UInt64 counters[],
                                             const fmi3UInt64 resolutions[]) unsupported(fmi3SetShiftFraction)
 
 FMI3_Export fmi3Status fmi3EvaluateDiscreteStates(fmi3Instance instance) unsupported(fmi3EvaluateDiscreteStates)
@@ -1303,7 +1303,7 @@ FMI3_Export fmi3Status fmi3SerializedFMUStateSize(fmi3Instance instance, fmi3FMU
 
 FMI3_Export fmi3Status fmi3SerializeFMUState(fmi3Instance instance, fmi3FMUState FMUState, fmi3Byte serializedState[], size_t size) unsupported(fmi3SerializeFMUState)
 
-FMI3_Export fmi3Status fmi3DeSerializeFMUState(fmi3Instance instance, const fmi3Byte serializedState[], size_t size, fmi3FMUState* FMUState) unsupported(fmi3DeSerializeFMUState)
+FMI3_Export fmi3Status fmi3DeserializeFMUState(fmi3Instance instance, const fmi3Byte serializedState[], size_t size, fmi3FMUState* FMUState) unsupported(fmi3DeserializeFMUState)
 
 FMI3_Export fmi3Status fmi3GetDirectionalDerivative(fmi3Instance instance,
                                                     const fmi3ValueReference unknowns[],
