@@ -8,6 +8,7 @@ string(MD5 FMU_TOKEN modelDescription.in.xml)
 
 configure_file(modelDescription.in.xml modelDescription.xml @ONLY)
 configure_file(buildDescription.in.xml buildDescription.xml @ONLY)
+configure_file(doc.in.html doc.html @ONLY)
 
 add_library(${FMU_BCS_MODEL_IDENTIFIER} SHARED SimpleArrayTest.c)
 set_target_properties(${FMU_BCS_MODEL_IDENTIFIER} PROPERTIES PREFIX "")
@@ -27,11 +28,15 @@ target_compile_definitions(${FMU_BCS_MODEL_IDENTIFIER} PRIVATE
 add_custom_command(TARGET ${FMU_BCS_MODEL_IDENTIFIER}
 	POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/buildfmu"
-	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/sources"
+	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources"
+	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/documentation/licenses"
 	COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/binaries/${FMI_BINARIES_PLATFORM}"
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/README.md" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/documentation/"
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/doc.html" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/documentation/index.html"
+	COMMAND ${CMAKE_COMMAND} -E copy "${FMI30TestFMUs_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/documentation/licenses/license.txt"
 	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/buildDescription.xml" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources/buildDescription.xml"
 	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/modelDescription.xml" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/modelDescription.xml"
 	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/SimpleArrayTest.c" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources/SimpleArrayTest.c"
 	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/SimpleArrayTest.h" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources/SimpleArrayTest.h"
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${FMU_BCS_MODEL_IDENTIFIER}> "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/binaries/${FMI_BINARIES_PLATFORM}"
-	COMMAND ${CMAKE_COMMAND} -E chdir "${CMAKE_CURRENT_BINARY_DIR}/buildfmu" ${CMAKE_COMMAND} -E tar "cfv" "../${FMU_MODEL_NAME}.fmu" --format=zip "modelDescription.xml" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/binaries/${FMI_BINARIES_PLATFORM}")
+	COMMAND ${CMAKE_COMMAND} -E chdir "${CMAKE_CURRENT_BINARY_DIR}/buildfmu" ${CMAKE_COMMAND} -E tar "cfv" "../${FMU_MODEL_NAME}.fmu" --format=zip "modelDescription.xml" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/documentation" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/sources" "${CMAKE_CURRENT_BINARY_DIR}/buildfmu/binaries/${FMI_BINARIES_PLATFORM}")
