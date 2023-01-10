@@ -1,7 +1,7 @@
 /*
  * PMSF FMU Framework for FMI 3.0 Co-Simulation FMUs
  *
- * (C) 2016 -- 2022 PMSF IT Consulting Pierre R. Mai
+ * (C) 2016 -- 2023 PMSF IT Consulting Pierre R. Mai
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -982,12 +982,7 @@ FMI3_Export fmi3Status fmi3UpdateDiscreteStates(fmi3Instance instance,
                                                 fmi3Boolean* nextEventTimeDefined,
                                                 fmi3Float64* nextEventTime) unsupported(fmi3UpdateDiscreteStates)
 
-FMI3_Export fmi3Status fmi3EnterEventMode(fmi3Instance instance,
-                                          fmi3EventQualifier stepEvent,
-                                          fmi3EventQualifier stateEvent,
-                                          const fmi3Int32 rootsFound[],
-                                          size_t nEventIndicators,
-                                          fmi3EventQualifier timeEvent) unsupported(fmi3EnterEventMode)
+FMI3_Export fmi3Status fmi3EnterEventMode(fmi3Instance instance) unsupported(fmi3EnterEventMode)
 
 FMI3_Export fmi3Status fmi3EnterStepMode(fmi3Instance instance) unsupported(fmi3EnterStepMode)
 
