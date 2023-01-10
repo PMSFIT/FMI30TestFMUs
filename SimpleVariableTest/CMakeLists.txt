@@ -24,25 +24,6 @@ endif()
 target_compile_definitions(${FMU_BCS_MODEL_IDENTIFIER} PRIVATE
 	$<$<BOOL:${PUBLIC_LOGGING}>:PUBLIC_LOGGING>
 	$<$<BOOL:${VERBOSE_FMI_LOGGING}>:VERBOSE_FMI_LOGGING>)
-if(WIN32)
-	if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-		set(FMI_BINARIES_PLATFORM "x86_64-windows")
-	else()
-		set(FMI_BINARIES_PLATFORM "i686-windows")
-	endif()
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-		set(FMI_BINARIES_PLATFORM "x86_64-linux")
-	else()
-		set(FMI_BINARIES_PLATFORM "i686-linux")
-	endif()
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-		set(FMI_BINARIES_PLATFORM "x86_64-darwin")
-	else()
-		set(FMI_BINARIES_PLATFORM "i686-darwin")
-	endif()
-endif()
 add_custom_command(TARGET ${FMU_BCS_MODEL_IDENTIFIER}
 	POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/buildfmu"
