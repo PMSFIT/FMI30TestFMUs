@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(FMI30TestFMUs)
 
 # Set a default build type if none was specified

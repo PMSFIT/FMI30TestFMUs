@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(SimpleVariableTest)
 set(FMU_MODEL_NAME "${PROJECT_NAME}")
 set(FMU_BCS_MODEL_IDENTIFIER "${FMU_MODEL_NAME}BCS")
