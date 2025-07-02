@@ -19,12 +19,6 @@
 #include <errno.h>
 #include <stdio.h>
 
-#ifdef _MSC_VER
-#define myrecalloc _recalloc
-#else
-#define myrecalloc(ptr,num,size) realloc(ptr,num*size)
-#endif
-
 #ifndef FMU_SHARED_OBJECT
 #define FMI3_FUNCTION_PREFIX FMU_MODEL_IDENTIFIER ## _
 #endif

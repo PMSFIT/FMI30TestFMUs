@@ -49,7 +49,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	endif()
 endif()
 
-include_directories( fmi-standard/headers )
+include_directories( fmi-standard/headers includes )
 add_subdirectory( SimpleVariableTest )
 add_subdirectory( SimpleArrayTest )
 add_subdirectory( DynamicArrayTest )

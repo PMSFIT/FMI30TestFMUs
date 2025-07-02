@@ -9,39 +9,7 @@
  */
 
 #include "SimpleVariableTest.h"
-
-/*
- * Debug Breaks
- *
- * If you define DEBUGBREAKS the FMU will automatically break
- * into an attached Debugger on all major computation functions.
- * Note that the FMU is likely to break all environments if no
- * Debugger is actually attached when the breaks are triggered.
- */
-#if defined(DEBUGBREAKS) && !defined(NDEBUG)
-#if defined(__has_builtin) && !defined(__ibmxl__)
-#if __has_builtin(__builtin_debugtrap)
-#define DEBUGBREAK() __builtin_debugtrap()
-#elif __has_builtin(__debugbreak)
-#define DEBUGBREAK() __debugbreak()
-#endif
-#endif
-#if !defined(DEBUGBREAK)
-#if defined(_MSC_VER) || defined(__INTEL_COMPILER)
-#include <intrin.h>
-#define DEBUGBREAK() __debugbreak()
-#else
-#include <signal.h>
-#if defined(SIGTRAP)
-#define DEBUGBREAK() raise(SIGTRAP)
-#else
-#define DEBUGBREAK() raise(SIGABRT)
-#endif
-#endif
-#endif
-#else
-#define DEBUGBREAK()
-#endif
+#include "CommonUtil.h"
 
 /* Private File-based Logging just for Debugging */
 #ifdef PRIVATE_LOG_PATH
