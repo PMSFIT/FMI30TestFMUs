@@ -473,16 +473,16 @@ fmi3Status doInit(SimpleArrayTest component)
     for (i = 0; i<FMI_BINARY_VARS; i++) {
         switch (i) {
             case FMI_BINARY_BINARYCONSTANT_IDX:
-                SetAll(component->binary_vars[i],strdup("\xBE\xEF"));
-                SetAll(component->binary_sizes[i],strlen(component->binary_vars[i][0][0]));
+                SetAll(component->binary_vars[i],(my3Binary)strdup("\xBE\xEF"));
+                SetAll(component->binary_sizes[i],strlen((char*)component->binary_vars[i][0][0]));
                 break;
             case FMI_BINARY_BINARYPARAMETER_IDX:
-                SetAll(component->binary_vars[i],strdup("\x1D\xE4"));
-                SetAll(component->binary_sizes[i],strlen(component->binary_vars[i][0][0]));
+                SetAll(component->binary_vars[i],(my3Binary)strdup("\x1D\xE4"));
+                SetAll(component->binary_sizes[i],strlen((char*)component->binary_vars[i][0][0]));
                 break;
             case FMI_BINARY_BINARYCALCULATEDPARAMETER_IDX:
-                SetAll(component->binary_vars[i],strdup("\xA3\x0B"));
-                SetAll(component->binary_sizes[i],strlen(component->binary_vars[i][0][0]));
+                SetAll(component->binary_vars[i],(my3Binary)strdup("\xA3\x0B"));
+                SetAll(component->binary_sizes[i],strlen((char*)component->binary_vars[i][0][0]));
                 break;
             default:
                 SetAll(component->binary_vars[i],NULL);

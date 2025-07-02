@@ -365,16 +365,16 @@ fmi3Status doInit(SimpleVariableTest component)
     for (i = 0; i<FMI_BINARY_VARS; i++) {
         switch (i) {
             case FMI_BINARY_BINARYCONSTANT_IDX:
-                component->binary_vars[i] = strdup("\xBE\xEF");
-                component->binary_sizes[i] = strlen(component->binary_vars[i]);
+                component->binary_vars[i] = (my3Binary)strdup("\xBE\xEF");
+                component->binary_sizes[i] = strlen((char*)component->binary_vars[i]);
                 break;
             case FMI_BINARY_BINARYPARAMETER_IDX:
-                component->binary_vars[i] = strdup("\x1D\xE4");
-                component->binary_sizes[i] = strlen(component->binary_vars[i]);
+                component->binary_vars[i] = (my3Binary)strdup("\x1D\xE4");
+                component->binary_sizes[i] = strlen((char*)component->binary_vars[i]);
                 break;
             case FMI_BINARY_BINARYCALCULATEDPARAMETER_IDX:
-                component->binary_vars[i] = strdup("\xA3\x0B");
-                component->binary_sizes[i] = strlen(component->binary_vars[i]);
+                component->binary_vars[i] = (my3Binary)strdup("\xA3\x0B");
+                component->binary_sizes[i] = strlen((char*)component->binary_vars[i]);
                 break;
             default:
                 component->binary_vars[i] = NULL;
