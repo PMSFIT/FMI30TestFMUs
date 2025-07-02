@@ -214,7 +214,7 @@ FMI3_Export fmi3Status fmi3SetDebugLogging(fmi3Instance instance, fmi3Boolean lo
         if (myc->loggingCategories != NULL) {
             size_t i;
             myc->nCategories = nCategories;
-            for (i=0;i<nCategories;i++) myc->loggingCategories[i]=strdup(categories[i]);
+            for (i=0;i<nCategories;i++) myc->loggingCategories[i]=safe_strdup(categories[i],strdup(""));
         }
     } else {
         myc->loggingCategories = calloc(2,sizeof(char*));
@@ -268,9 +268,9 @@ FMI3_Export fmi3Instance fmi3InstantiateCoSimulation(
         return NULL;
     }
 
-    myc->instanceName=strdup(instanceName);
-    myc->instantiationToken=strdup(instantiationToken);
-    myc->resourcePath=strdup(resourcePath);
+    myc->instanceName=safe_strdup(instanceName,strdup(FMU_MODEL_NAME));
+    myc->instantiationToken=safe_strdup(instantiationToken,strdup(FMU_TOKEN));
+    myc->resourcePath=safe_strdup(resourcePath,NULL);
     myc->visible=visible;
     myc->loggingOn=loggingOn;
     myc->eventModeUsed=eventModeUsed;
