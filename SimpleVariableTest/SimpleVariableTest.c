@@ -1135,7 +1135,7 @@ FMI3_Export fmi3Status fmi3SetString(fmi3Instance instance, const fmi3ValueRefer
     for (i = 0; i<nValueReferences; i++) {
         checked_vr_idx(idx,i,STRING);
         free(myc->string_vars[idx]);
-        myc->string_vars[idx] = strdup(values[i]);
+        myc->string_vars[idx] = safe_strdup(values[i],strdup(""));
         tuned |= (idx == FMI_STRING_STRINGPARAMETER_IDX);
     }
     if (myc->init_mode || tuned)
@@ -1154,7 +1154,7 @@ FMI3_Export fmi3Status fmi3SetBinary(fmi3Instance instance, const fmi3ValueRefer
         checked_vr_idx(idx,i,BINARY);
         free(myc->binary_vars[idx]);
         myc->binary_sizes[idx] = valueSizes[i];
-        if (valueSizes[i]) {
+        if (valueSizes[i] && values[i] != NULL) {
             myc->binary_vars[idx] = malloc(valueSizes[i]);
             memcpy(myc->binary_vars[idx],values[i],valueSizes[i]);
         } else

@@ -140,12 +140,12 @@ void error_log(SimpleArrayTest component, const char* format, ...) {
                        } while(0)
 
 #define CopyInStr(a,i,b) do { \
-                         b[0][0] = strdup(a[i++]); \
-                         b[0][1] = strdup(a[i++]); \
-                         b[0][2] = strdup(a[i++]); \
-                         b[1][0] = strdup(a[i++]); \
-                         b[1][1] = strdup(a[i++]); \
-                         b[1][2] = strdup(a[i++]); \
+                         b[0][0] = safe_strdup(a[i++],strdup("")); \
+                         b[0][1] = safe_strdup(a[i++],strdup("")); \
+                         b[0][2] = safe_strdup(a[i++],strdup("")); \
+                         b[1][0] = safe_strdup(a[i++],strdup("")); \
+                         b[1][1] = safe_strdup(a[i++],strdup("")); \
+                         b[1][2] = safe_strdup(a[i++],strdup("")); \
                        } while(0)
 
 #define BinDup(a,b,c,d) do { \
