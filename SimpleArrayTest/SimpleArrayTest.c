@@ -1,7 +1,7 @@
 /*
  * PMSF FMU Framework for FMI 3.0 Co-Simulation FMUs
  *
- * (C) 2016 -- 2023 PMSF IT Consulting Pierre R. Mai
+ * (C) 2016 -- 2025 PMSF IT Consulting Pierre R. Mai
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this

@@ -1,7 +1,7 @@
 /*
  * PMSF FMU Framework for FMI 3.0 Co-Simulation FMUs
  *
- * (C) 2016 -- 2023 PMSF IT Consulting Pierre R. Mai
+ * (C) 2016 -- 2025 PMSF IT Consulting Pierre R. Mai
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -37,9 +37,9 @@
  * array variables.
  *
  * The FMI_*_BASE_VR defines define offsets between the array indices
- * used internally and the publically visible ValueReference, allowing
+ * used internally and the publicly visible ValueReference, allowing
  * e.g. to have globally unique VRs (which are not required for either
- * FMI 1.0 or 2.0, but are for the FMI 3.0 draft support).
+ * FMI 1.0 or 2.0, but are for FMI 3.0 support).
  */
 
 typedef fmi3Byte* my3Binary;
